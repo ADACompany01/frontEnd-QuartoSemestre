@@ -3,18 +3,15 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import AppTheme from '../shared-theme/AppTheme';
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
+import { SitemarkIcon } from './CustomIcons';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -44,7 +41,6 @@ export default function ListBudget(props) {
   const [orcamentoData, setOrcamentoData] = React.useState(null);
   const [orcamentoId, setOrcamentoId] = React.useState("");
   const token = localStorage.getItem('token');
-  const navigate = useNavigate();
 
   if (!token) {
     return <Navigate to="/signin" />;
@@ -76,7 +72,7 @@ export default function ListBudget(props) {
       }
       const data = await response.json();
       setOrcamentoData(data);
-      console.log('Dados recebidos:', data); // Para debug
+      console.log('Dados recebidos:', data);
     } catch (error) {
       console.error('Erro ao buscar orçamento:', error);
       setOrcamentoData(null);
@@ -107,67 +103,67 @@ export default function ListBudget(props) {
           {orcamentoData && (
             <Box sx={{ mt: 2 }}>
               <Typography variant="h6">Dados do Orçamento:</Typography>
-              <TextField 
-                label="ID" 
-                fullWidth 
-                value={formatValue(orcamentoData._id)} 
-                disabled 
+              <TextField
+                label="ID"
+                fullWidth
+                value={formatValue(orcamentoData._id)}
+                disabled
                 sx={{ mb: 2 }}
               />
-              <TextField 
-                label="ID do Cliente" 
-                fullWidth 
-                value={formatValue(orcamentoData.clienteId)} 
-                disabled 
+              <TextField
+                label="ID do Cliente"
+                fullWidth
+                value={formatValue(orcamentoData.clienteId)}
+                disabled
                 sx={{ mb: 2 }}
               />
-              <TextField 
-                label="Validade do Orçamento" 
-                fullWidth 
-                value={formatValue(orcamentoData.validadeOrcamento)} 
-                disabled 
+              <TextField
+                label="Validade do Orçamento"
+                fullWidth
+                value={formatValue(orcamentoData.validadeOrcamento)}
+                disabled
                 sx={{ mb: 2 }}
               />
-              <TextField 
-                label="Data de Criação" 
-                fullWidth 
-                value={formatValue(orcamentoData.dataCriacao)} 
-                disabled 
+              <TextField
+                label="Data de Criação"
+                fullWidth
+                value={formatValue(orcamentoData.dataCriacao)}
+                disabled
                 sx={{ mb: 2 }}
               />
-              <TextField 
-                label="Valor Total" 
-                fullWidth 
-                value={formatValue(orcamentoData.valorTotal)} 
-                disabled 
+              <TextField
+                label="Valor Total"
+                fullWidth
+                value={formatValue(orcamentoData.valorTotal)}
+                disabled
                 sx={{ mb: 2 }}
               />
-              <TextField 
-                label="Tipo de Serviço" 
-                fullWidth 
-                value={formatValue(orcamentoData.tipoServico)} 
-                disabled 
+              <TextField
+                label="Tipo de Serviço"
+                fullWidth
+                value={formatValue(orcamentoData.tipoServico)}
+                disabled
                 sx={{ mb: 2 }}
               />
-              <TextField 
-                label="Status do Orçamento" 
-                fullWidth 
-                value={formatValue(orcamentoData.statusOrcamento)} 
-                disabled 
+              <TextField
+                label="Status do Orçamento"
+                fullWidth
+                value={formatValue(orcamentoData.statusOrcamento)}
+                disabled
                 sx={{ mb: 2 }}
               />
-              <TextField 
-                label="Descrição" 
-                fullWidth 
-                value={formatValue(orcamentoData.descricao)} 
-                disabled 
+              <TextField
+                label="Descrição"
+                fullWidth
+                value={formatValue(orcamentoData.descricao)}
+                disabled
                 sx={{ mb: 2 }}
               />
-              <TextField 
-                label="Email do Vendedor" 
-                fullWidth 
-                value={formatValue(orcamentoData.emailVendedor)} 
-                disabled 
+              <TextField
+                label="Email do Vendedor"
+                fullWidth
+                value={formatValue(orcamentoData.emailVendedor)}
+                disabled
                 sx={{ mb: 2 }}
               />
             </Box>
