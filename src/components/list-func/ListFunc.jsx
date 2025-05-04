@@ -18,7 +18,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import AppTheme from '../shared-theme/AppTheme';
-import SitemarkIcon from './CustomIcons';
+import { SitemarkIcon } from './CustomIcons';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { Navigate } from 'react-router-dom';
 
