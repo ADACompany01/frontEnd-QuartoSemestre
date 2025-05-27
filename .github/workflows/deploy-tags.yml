@@ -1,0 +1,35 @@
+name: Deploy Tags
+
+on:
+  push:
+    tags: [ 'v*' ]  # Aciona para tags que começam com 'v'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Necessário para manipular tags
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Para histórico completo
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm install
+        working-directory: API_NEST/ada-company
+      - name: Run build
+        run: npm run build
+        working-directory: API_NEST/ada-company
+      - name: Deploy or update tag
+        run: |
+          echo "Deploying tag: ${{ github.ref_name }}"
+          # Exemplo: lógica para manipular a tag
+          # git tag -d ${{ github.ref_name }} || true
+          # git tag ${{ github.ref_name }} HEAD
+          # git push origin ${{ github.ref_name }} --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
