@@ -1,4 +1,4 @@
-name: Frontend CI/CD - Build, Versionamento e Imagem Docker
+name: Frontend CI/CD - Build, Versionamento e Imagem Dockerhub
 
 on:
   push:
