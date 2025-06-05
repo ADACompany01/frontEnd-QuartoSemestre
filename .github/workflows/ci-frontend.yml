@@ -85,7 +85,6 @@ jobs:
           # Salvar a nova versão como uma saída do passo para ser usada por outros passos
           echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
 
-      # --- Início dos passos Docker otimizados ---
       - name: Configurar Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -119,7 +118,6 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-      # --- Fim dos passos Docker otimizados ---
 
       - name: Deploy da Aplicação Frontend (Placeholder)
         run: |
