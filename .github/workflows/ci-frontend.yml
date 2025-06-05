@@ -11,6 +11,8 @@ on:
 jobs:
   build_version_docker:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout do Código
