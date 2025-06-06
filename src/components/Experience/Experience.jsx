@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-
 import styles from "./Experience.module.css";
 import skills from "../../data/skills.json";
 import { getImageUrl } from "../../utils";
