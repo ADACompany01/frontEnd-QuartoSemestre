@@ -10,7 +10,6 @@ export const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     // Código do Hotjar
