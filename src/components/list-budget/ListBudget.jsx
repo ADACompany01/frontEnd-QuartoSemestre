@@ -11,7 +11,7 @@ import { styled } from '@mui/material/styles';
 import AppTheme from '../shared-theme/AppTheme';
 import { SitemarkIcon } from './CustomIcons';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -41,9 +41,6 @@ export default function ListBudget(props) {
   const [orcamentoData, setOrcamentoData] = React.useState(null);
   const [orcamentoId, setOrcamentoId] = React.useState("");
   const token = localStorage.getItem('token');
-  // Se você não usa 'navigate' em nenhum lugar, pode remover esta linha.
-  // Se planeja usar, terá que fazer chamadas como navigate('/alguma-rota');
-  const navigate = useNavigate(); // <-- Linter está reclamando disso
 
   if (!token) {
     return <Navigate to="/signin" />;
@@ -75,7 +72,7 @@ export default function ListBudget(props) {
       }
       const data = await response.json();
       setOrcamentoData(data);
-      console.log('Dados recebidos:', data); // Para debug
+      console.log('Dados recebidos:', data);
     } catch (error) {
       console.error('Erro ao buscar orçamento:', error);
       setOrcamentoData(null);
