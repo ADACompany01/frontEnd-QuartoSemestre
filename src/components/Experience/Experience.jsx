@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 
 import styles from "./Experience.module.css";
 import skills from "../../data/skills.json";
+import history from "../../data/history.json";
 import { getImageUrl } from "../../utils";
 
 export const Experience = () => {
@@ -48,10 +49,10 @@ export const Experience = () => {
                 levando em consideração limitações comuns como visão reduzida,
                 dificuldade motora e uso simplificado.
               </p>
-              <ul>
-                <li>Textos grandes e de fácil leitura.</li>
-                <li>Botões maiores para facilitar o clique.</li>
-                <li>Navegação simplificada com menos passos.</li>
+              <ul className={styles.textList}>
+                <li className={styles.textItem}>Textos grandes e de fácil leitura.</li>
+                <li className={styles.textItem}>Botões maiores para facilitar o clique.</li>
+                <li className={styles.textItem}>Navegação simplificada com menos passos.</li>
               </ul>
             </div>
           </li>
@@ -64,10 +65,10 @@ export const Experience = () => {
                 Desenvolvemos interfaces amigáveis para crianças, com foco em
                 interatividade, cores chamativas e controles intuitivos.
               </p>
-              <ul>
-                <li>Elementos visuais interativos e coloridos.</li>
-                <li>Textos curtos e diretos com ícones de apoio.</li>
-                <li>Feedback visual e sonoro para ações realizadas.</li>
+              <ul className={styles.textList}>
+                <li className={styles.textItem}>Elementos visuais interativos e coloridos.</li>
+                <li className={styles.textItem}>Textos curtos e diretos com ícones de apoio.</li>
+                <li className={styles.textItem}>Feedback visual e sonoro para ações realizadas.</li>
               </ul>
             </div>
           </li>
@@ -81,13 +82,13 @@ export const Experience = () => {
                 contraste, suporte para leitores de tela e navegação por
                 teclado.
               </p>
-              <ul>
-                <li>Altos contrastes de cores.</li>
-                <li>
+              <ul className={styles.textList}>
+                <li className={styles.textItem}>Altos contrastes de cores.</li>
+                <li className={styles.textItem}>
                   Suporte total para leitores de tela (com descrições de
                   imagens).
                 </li>
-                <li>Navegação via teclado com foco visível.</li>
+                <li className={styles.textItem}>Navegação via teclado com foco visível.</li>
               </ul>
             </div>
           </li>
@@ -100,13 +101,13 @@ export const Experience = () => {
                 Design adaptado para usuários daltônicos, usando combinações de
                 cores seguras e ícones que não dependem apenas da cor.
               </p>
-              <ul>
-                <li>
+              <ul className={styles.textList}>
+                <li className={styles.textItem}>
                   Paletas de cores amigáveis para diferentes tipos de
                   daltonismo.
                 </li>
-                <li>Uso de padrões e texturas além de cores para distinção.</li>
-                <li>
+                <li className={styles.textItem}>Uso de padrões e texturas além de cores para distinção.</li>
+                <li className={styles.textItem}>
                   Evitar uso exclusivo de cores para transmitir informações
                   importantes.
                 </li>

@@ -67,7 +67,7 @@ const FormContainer = styled(Card)(({ theme }) => ({
 
 export default function ClientAccess(props) {
   const [clienteData, setClienteData] = React.useState(null);
-  const token = localStorage.getItem('token');
+  const [token, setToken] = React.useState(localStorage.getItem('token'));
   const [feedback, setFeedback] = React.useState('');
   const [rating, setRating] = React.useState(0);
   const [supportMessage, setSupportMessage] = React.useState('');
@@ -119,7 +119,7 @@ export default function ClientAccess(props) {
       }
     };
     fetchClientData();
-  }, []);
+  }, [token]);
 
   if (!token) return <Navigate to="/signin" />;
 
