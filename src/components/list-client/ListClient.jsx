@@ -3,16 +3,13 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import AppTheme from '../shared-theme/AppTheme';
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
+import { SitemarkIcon } from './CustomIcons';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { Navigate } from 'react-router-dom';
 
@@ -102,113 +99,113 @@ export default function ListClient(props) {
         {clienteData && (
           <Box sx={{ mt: 2 }}>
             <Typography variant="h6">Dados do Cliente:</Typography>
-            <TextField 
-              label="_id" 
-              fullWidth 
-              value={formatValue(clienteData._id)} 
-              disabled 
+            <TextField
+              label="_id"
+              fullWidth
+              value={formatValue(clienteData._id)}
+              disabled
             />
-            <TextField 
-              label="Nome Cliente" 
-              fullWidth 
-              value={formatValue(clienteData.nomeCliente)} 
-              disabled 
+            <TextField
+              label="Nome Cliente"
+              fullWidth
+              value={formatValue(clienteData.nomeCliente)}
+              disabled
             />
-            <TextField 
-              label="Telefone" 
-              fullWidth 
-              value={formatValue(clienteData.telefone)} 
-              disabled 
+            <TextField
+              label="Telefone"
+              fullWidth
+              value={formatValue(clienteData.telefone)}
+              disabled
             />
-            <TextField 
-              label="CEP" 
-              fullWidth 
-              value={formatValue(clienteData.endereco?.[0]?.cep)} 
-              disabled 
+            <TextField
+              label="CEP"
+              fullWidth
+              value={formatValue(clienteData.endereco?.[0]?.cep)}
+              disabled
             />
-            <TextField 
-              label="Logradouro" 
-              fullWidth 
-              value={formatValue(clienteData.endereco?.[0]?.logradouro)} 
-              disabled 
+            <TextField
+              label="Logradouro"
+              fullWidth
+              value={formatValue(clienteData.endereco?.[0]?.logradouro)}
+              disabled
             />
-            <TextField 
-              label="Complemento" 
-              fullWidth 
-              value={formatValue(clienteData.endereco?.[0]?.complemento)} 
-              disabled 
+            <TextField
+              label="Complemento"
+              fullWidth
+              value={formatValue(clienteData.endereco?.[0]?.complemento)}
+              disabled
             />
-            <TextField 
-              label="Bairro" 
-              fullWidth 
-              value={formatValue(clienteData.endereco?.[0]?.bairro)} 
-              disabled 
+            <TextField
+              label="Bairro"
+              fullWidth
+              value={formatValue(clienteData.endereco?.[0]?.bairro)}
+              disabled
             />
-            <TextField 
-              label="Localidade" 
-              fullWidth 
-              value={formatValue(clienteData.endereco?.[0]?.localidade)} 
-              disabled 
+            <TextField
+              label="Localidade"
+              fullWidth
+              value={formatValue(clienteData.endereco?.[0]?.localidade)}
+              disabled
             />
-            <TextField 
-              label="UF" 
-              fullWidth 
-              value={formatValue(clienteData.endereco?.[0]?.uf)} 
-              disabled 
+            <TextField
+              label="UF"
+              fullWidth
+              value={formatValue(clienteData.endereco?.[0]?.uf)}
+              disabled
             />
-            <TextField 
-              label="Estado" 
-              fullWidth 
-              value={formatValue(clienteData.endereco?.[0]?.estado)} 
-              disabled 
+            <TextField
+              label="Estado"
+              fullWidth
+              value={formatValue(clienteData.endereco?.[0]?.estado)}
+              disabled
             />
-            <TextField 
-              label="DDD" 
-              fullWidth 
-              value={formatValue(clienteData.endereco?.[0]?.ddd)} 
-              disabled 
+            <TextField
+              label="DDD"
+              fullWidth
+              value={formatValue(clienteData.endereco?.[0]?.ddd)}
+              disabled
             />
-            <TextField 
-              label="Coordenadas" 
-              fullWidth 
-              value={formatValue(clienteData.localizacao?.[0]?.coordinates)} 
-              disabled 
+            <TextField
+              label="Coordenadas"
+              fullWidth
+              value={formatValue(clienteData.localizacao?.[0]?.coordinates)}
+              disabled
             />
-            <TextField 
-              label="CNPJ" 
-              fullWidth 
-              value={formatValue(clienteData.cnpj)} 
-              disabled 
+            <TextField
+              label="CNPJ"
+              fullWidth
+              value={formatValue(clienteData.cnpj)}
+              disabled
             />
-            <TextField 
-              label="Email" 
-              fullWidth 
-              value={formatValue(clienteData.usuario?.[0]?.email)} 
-              disabled 
+            <TextField
+              label="Email"
+              fullWidth
+              value={formatValue(clienteData.usuario?.[0]?.email)}
+              disabled
             />
-            <TextField 
-              label="Senha" 
-              fullWidth 
-              value={formatValue(clienteData.usuario?.[0]?.senha)} 
-              disabled 
+            <TextField
+              label="Senha"
+              fullWidth
+              value={formatValue(clienteData.usuario?.[0]?.senha)}
+              disabled
             />
-            <TextField 
-              label="Tipo de Usuário" 
-              fullWidth 
-              value={formatValue(clienteData.usuario?.[0]?.tipoUsuario)} 
-              disabled 
+            <TextField
+              label="Tipo de Usuário"
+              fullWidth
+              value={formatValue(clienteData.usuario?.[0]?.tipoUsuario)}
+              disabled
             />
-            <TextField 
-              label="Telefone do Usuário" 
-              fullWidth 
-              value={formatValue(clienteData.usuario?.[0]?.telefone)} 
-              disabled 
+            <TextField
+              label="Telefone do Usuário"
+              fullWidth
+              value={formatValue(clienteData.usuario?.[0]?.telefone)}
+              disabled
             />
-            <TextField 
-              label="Nome Completo do Usuário" 
-              fullWidth 
-              value={formatValue(clienteData.usuario?.[0]?.nomeCompleto)} 
-              disabled 
+            <TextField
+              label="Nome Completo do Usuário"
+              fullWidth
+              value={formatValue(clienteData.usuario?.[0]?.nomeCompleto)}
+              disabled
             />
           </Box>
         )}
