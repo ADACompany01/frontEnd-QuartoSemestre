@@ -18,14 +18,20 @@ import { AcessoAdmin2 } from "./components/admin-access-cadastro/admin-access";
 import ListFunc from "./components/list-func/ListFunc";
 import ListService from "./components/list-services/ListService";
 import ListBudget from "./components/list-budget/ListBudget";
+import ClientPortalLayout from "./components/portal/ClientPortalLayout";
+import Dashboard from "./components/portal/Dashboard";
+import Orcamentos from "./components/portal/Orcamentos";
+import Contratos from "./components/portal/Contratos";
+import Projetos from "./components/portal/Projetos";
+
 
 function Home() {
   return (
     <div>
       <Hero />
       <About />
-      <Projects/>
-      <Experience/>
+      <Projects />
+      <Experience />
     </div>
   );
 }
@@ -45,7 +51,7 @@ function App() {
       <div className={styles.App}>
         <Navbar />
         <Routes>
-          <Route path="/"  element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/experience" element={<Experience />} />
           <Route path="/projects" element={<Projects />} />
@@ -57,9 +63,16 @@ function App() {
           <Route path="/signupservico" element={<SignUpServico />} />
           <Route path="/signuporcamento" element={<SignUpOrcamento />} />
           <Route path="/client" element={<ClientAccess />} />   {/* Corrected component name */}
-          <Route path="/admin" element={<Admin />} />   
+          <Route path="/admin" element={<Admin />} />
           <Route path="/listservice" element={<ListService />} />
-          <Route path="/listbudget" element={<ListBudget />} />      
+          <Route path="/listbudget" element={<ListBudget />} />
+          <Route path="/portalcliente" element={<ClientPortalLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="orcamentos" element={<Orcamentos />} />
+            <Route path="contratos" element={<Contratos />} />
+            <Route path="projetos" element={<Projetos />} />
+          </Route>
+
         </Routes>
         <Contact />
       </div>

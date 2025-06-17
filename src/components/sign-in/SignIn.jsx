@@ -16,9 +16,9 @@ import { styled } from '@mui/material/styles';
 import ForgotPassword from './ForgotPassword';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
 import AppTheme from '../shared-theme/AppTheme';
-import ColorModeSelect from '../shared-theme/ColorModeSelect'; 
+import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from "jwt-decode";  
+import { jwtDecode } from "jwt-decode";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -78,10 +78,10 @@ export default function SignIn(props) {
   const handleClose = () => {
     setOpen(false);
   };
- 
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+
     if (emailError || passwordError) {
       return;
     }
@@ -102,7 +102,7 @@ export default function SignIn(props) {
 
       if (response.ok) {
         const result = await response.json();
-    
+
         // Verifica se o token foi retornado antes de salvá-lo
         if (result.token) {
           const token = result.token;
@@ -115,7 +115,7 @@ export default function SignIn(props) {
           console.log('Login com sucesso');
           alert('Login com sucesso!');
           if (userRole === 'cliente') {
-            navigate('/client');
+            navigate('/portalcliente');
           } else if (userRole === 'admin') {
             navigate('/admin');
           } else {
@@ -132,7 +132,7 @@ export default function SignIn(props) {
     } catch (error) {
       console.error('Erro de rede:', error.message || error);
     }
-    
+
   };
   const validateInputs = () => {
     const email = document.getElementById('email');

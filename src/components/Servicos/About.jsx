@@ -26,33 +26,33 @@ export const About = () => {
       <h2 className={styles.title}>Serviços</h2>
       <div className={styles.content}>
         <img
-          src={getImageUrl("about/aboutImage.png")}
+          src={getImageUrl("about/AdaSentada.png")}
           alt="Me sitting with a laptop"
           className={styles.aboutImage}
         />
         <ul className={styles.aboutItems}>
           <li className={styles.aboutItem}>
-            <img src={getImageUrl("about/cursorIcon.png")} alt="Cursor icon" />
+            <img src={getImageUrl("about/writing.png")} alt="Cursor icon" className={styles.iconList} />
             <div className={styles.aboutItemText}>
-              <h3>Criação</h3>
-              <p>
+              <h3 className={styles.textoLi}>Criação</h3>
+              <p className={styles.textoLi}>
                 Site completo com as funções e acessibilidades mais atuais do
                 mercado
               </p>
             </div>
           </li>
           <li className={styles.aboutItem}>
-            <img src={getImageUrl("about/serverIcon.png")} alt="Server icon" />
+            <img src={getImageUrl("about/adaptability.png")} alt="Server icon" className={styles.iconList} />
             <div className={styles.aboutItemText}>
-              <h3>Adaptação</h3>
-              <p>Serviços de adaptação do site em produção</p>
+              <h3 className={styles.textoLi}>Adaptação</h3>
+              <p className={styles.textoLi}>Serviços de adaptação do site em produção</p>
             </div>
           </li>
           <li className={styles.aboutItem}>
-            <img src={getImageUrl("about/cursorIcon.png")} alt="UI icon" />
+            <img src={getImageUrl("about/people.png")} alt="UI icon" className={styles.iconList}/>
             <div className={styles.aboutItemText}>
-              <h3>Consultoria</h3>
-              <p>
+              <h3 className={styles.textoLi}>Consultoria</h3>
+              <p className={styles.textoLi}>
                 Um guia com técnicas de acessibilidade para implementar, manter
                 e desenvolver o sistema
               </p>

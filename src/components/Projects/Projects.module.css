@@ -12,6 +12,7 @@
   font-weight: 700;
   letter-spacing: 1.75px;
   text-transform: uppercase;
+  color: #19376d;
 }
 
 .projects {
@@ -23,4 +24,33 @@
   justify-content: center;
   gap: 15px;
   width: 100%;
+}
+
+@media (max-width: 768px) {
+  .projects {
+    justify-content: start;
+    flex-wrap: nowrap;
+    overflow-x:auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-left: 16px;
+    padding: 0;
+    margin-left: 0;
+    margin-right: 0;
+    scroll-behavior: smooth;
+  }
+}
+.projects > *:first-child {
+  margin-left: 0;
+}
+
+.projects > * {
+  scroll-snap-align: start; /* Adiciona a marcação para que o primeiro card seja alinhado corretamente */
+}
+
+.container {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  margin-right: 5%;
+  margin-left: 5%;
 }
