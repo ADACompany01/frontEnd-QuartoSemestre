@@ -89,7 +89,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
     const password = data.get('password') as string;
 
     try {
-      const response = await fetch('https://api-ada-company.vercel.app/api/auth/login', {
+      const response = await fetch('https://backend-adacompany.onrender.com/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
