@@ -92,7 +92,7 @@ export default function SignIn(props) {
 
 
     try {
-      const response = await fetch(`${apiUrl}/auth/login`, {
+      const response = await fetch(`${apiUrl}/auth/login/cliente`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
