@@ -23,7 +23,10 @@ import Dashboard from "./components/portal/Dashboard";
 import Orcamentos from "./components/portal/Orcamentos";
 import Contratos from "./components/portal/Contratos";
 import Projetos from "./components/portal/Projetos";
-
+import { useEffect } from 'react';
+import AdminDashboard from "./components/painel-admin/AdminDashboard";
+import AdminPainel from "./components/painel-admin/AdminPainel";
+import AdminLayout from "./components/painel-admin/AdminLayout";
 
 function Home() {
   return (
@@ -46,6 +49,50 @@ function Admin() {
 }
 
 function App() {
+  useEffect(() => {
+
+if (!document.querySelector('div[vw]')) {
+      const vlibrasDiv = document.createElement('div');
+      vlibrasDiv.setAttribute('vw', '');
+      vlibrasDiv.className = 'enabled';
+      vlibrasDiv.innerHTML = `
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+          <div class="vw-plugin-top-wrapper"></div>
+        </div>
+      `;
+      document.body.appendChild(vlibrasDiv);
+    }
+
+    // Só adiciona o script se não existir
+    if (!document.querySelector('script[src="https://vlibras.gov.br/app/vlibras-plugin.js"]')) {
+      const scriptVLibras = document.createElement('script');
+      scriptVLibras.src = 'https://vlibras.gov.br/app/vlibras-plugin.js';
+      scriptVLibras.async = true;
+      scriptVLibras.onload = () => {
+        if (window.VLibras) {
+          new window.VLibras.Widget('https://vlibras.gov.br/app');
+        }
+      };
+      document.body.appendChild(scriptVLibras);
+    } else {
+      if (window.VLibras) {
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+      }
+    }
+
+const scriptUserWay = document.createElement('script');
+  scriptUserWay.src = 'https://cdn.userway.org/widget.js';
+  scriptUserWay.async = true;
+  scriptUserWay.defer = true;
+
+  window._userwayConfig = {
+    account: '' // substitua pelo seu ID ou remova para versão básica
+  };
+
+  document.body.appendChild(scriptUserWay);
+}, []);
+
   return (
     <Router>
       <div className={styles.App}>
@@ -72,12 +119,14 @@ function App() {
             <Route path="contratos" element={<Contratos />} />
             <Route path="projetos" element={<Projetos />} />
           </Route>
-
+          <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="gerenciar-pedidos" element={<AdminPainel />} />
+        </Route>
         </Routes>
         <Contact />
       </div>
     </Router>
   );
 }
-
 export default App;
