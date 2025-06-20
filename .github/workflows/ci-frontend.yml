@@ -1,5 +1,6 @@
 name: Frontend CI/CD - Build, Versionamento e Imagem Dockerhub
 
+
 on:
   push:
     branches:
