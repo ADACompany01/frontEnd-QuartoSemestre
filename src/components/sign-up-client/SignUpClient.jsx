@@ -42,9 +42,6 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 export default function SignUpClient(props) {
   const token = localStorage.getItem('token');
 
-  if (!token) {
-    return <Navigate to="/signin" />;
-  }
   const [endereco, setEndereco] = React.useState({
     logradouro: '',
     bairro: '',
