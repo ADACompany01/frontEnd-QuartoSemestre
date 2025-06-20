@@ -4,8 +4,10 @@
   position: relative;
   display: flex;
   align-items: center;
+  text-align: center;
   justify-content: space-between;
-  padding-top: 61px;
+  padding-top: 40px;
+  padding-bottom: 40px;
   z-index: 2;
   margin: 0 10%;
   color: #04152d;
