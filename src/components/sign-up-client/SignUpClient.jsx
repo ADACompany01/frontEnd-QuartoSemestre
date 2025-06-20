@@ -114,7 +114,7 @@ export default function SignUpClient(props) {
     };
 
     try {
-      const response = await fetch('https://api-ada-company.vercel.app/api/auth/registerCliente', {
+      const response = await fetch('https://backend-adacompany.onrender.com/clientes/cadastro', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
