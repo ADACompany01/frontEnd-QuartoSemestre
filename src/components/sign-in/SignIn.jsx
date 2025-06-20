@@ -109,7 +109,7 @@ export default function SignIn(props) {
           localStorage.setItem('token', token);
           localStorage.setItem('token', result.token);
           const decodedToken = jwtDecode(token);
-          const userRole = decodedToken.role;
+          const userRole = decodedToken.tipo_usuario;
           localStorage.setItem('userRole', userRole);
           console.log('Role do usuário:', userRole);
           console.log('Login com sucesso');
