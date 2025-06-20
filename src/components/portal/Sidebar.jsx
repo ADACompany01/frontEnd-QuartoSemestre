@@ -2,10 +2,8 @@ import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   const menu = [
-    { label: 'Dashboard', path: '' },
-    { label: 'Orçamentos', path: 'orcamentos' },
-    { label: 'Contratos', path: 'contratos' },
-    { label: 'Projetos', path: 'projetos' }];
+    { label: 'Inicio', path: '' },
+    { label: 'Pedido', path: 'orcamentos' }];
 
   return (
     <aside className="portal-sidebar">
