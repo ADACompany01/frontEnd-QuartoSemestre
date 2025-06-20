@@ -116,8 +116,8 @@ export default function SignIn(props) {
           alert('Login com sucesso!');
           if (userRole === 'cliente') {
             navigate('/portalcliente');
-          } else if (userRole === 'admin') {
-            navigate('/admin');
+          } else if (userRole === 'funcionario') {
+            navigate('/portalcliente');
           } else {
             navigate('/');
           }
