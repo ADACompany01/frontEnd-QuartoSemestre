@@ -9,8 +9,6 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import AppTheme from '../shared-theme/AppTheme';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
@@ -44,9 +42,6 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 export default function SignUpClient(props) {
   const token = localStorage.getItem('token');
 
-  if (!token) {
-    return <Navigate to="/signin" />;
-  }
   const [endereco, setEndereco] = React.useState({
     logradouro: '',
     bairro: '',
@@ -116,7 +111,7 @@ export default function SignUpClient(props) {
     };
 
     try {
-      const response = await fetch('https://api-ada-company.vercel.app/api/auth/registerCliente', {
+      const response = await fetch('https://backend-adacompany.onrender.com/clientes/cadastro', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
