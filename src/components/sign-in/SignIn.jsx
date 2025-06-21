@@ -26,11 +26,15 @@ export default function SignIn() {
         if (result.token) {
           const token = result.token;
           localStorage.setItem('token', token);
-          localStorage.setItem('token', result.token);
           const decodedToken = jwtDecode(token);
           const userRole = decodedToken.tipo_usuario;
+          const userId = decodedToken.id || decodedToken.sub; // Extrai o ID do usuário do token
+          
           localStorage.setItem('userRole', userRole);
+          localStorage.setItem('userId', userId); // Salva o userId no localStorage
+          
           console.log('Role do usuário:', userRole);
+          console.log('ID do usuário:', userId);
           console.log('Login com sucesso');
           alert('Login com sucesso!');
           if (userRole === 'cliente') {

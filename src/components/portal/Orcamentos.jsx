@@ -6,7 +6,7 @@ const Orcamentos = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const userId = localStorage.getItem('userId');
-  const token = localStorage.getItem('token'); // Adicionando token de autenticação
+  const token = localStorage.getItem('token');
 
   // Função para deixar o status bonito
   const formatarStatus = (status) => {
@@ -26,9 +26,20 @@ const Orcamentos = () => {
         setLoading(true);
         setError(null);
         
-        console.log('Fazendo requisição para:', 'https://backend-adacompany.onrender.com/api/orcamentos');
+        console.log('=== DEBUG ORÇAMENTOS ===');
         console.log('User ID:', userId);
         console.log('Token:', token ? 'Presente' : 'Ausente');
+        console.log('Token completo:', token);
+        
+        if (!userId) {
+          throw new Error('User ID não encontrado no localStorage');
+        }
+        
+        if (!token) {
+          throw new Error('Token não encontrado no localStorage');
+        }
+
+        console.log('Fazendo requisição para:', 'https://backend-adacompany.onrender.com/api/orcamentos');
 
         const response = await fetch('https://backend-adacompany.onrender.com/api/orcamentos', {
           method: 'GET',
@@ -42,7 +53,9 @@ const Orcamentos = () => {
         console.log('Headers da resposta:', response.headers);
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          const errorText = await response.text();
+          console.log('Erro da resposta:', errorText);
+          throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
         }
 
         const data = await response.json();
@@ -51,6 +64,7 @@ const Orcamentos = () => {
         // Filtra os orçamentos do usuário logado
         const orcamentosDoUsuario = data.data ? data.data.filter(o => o.id_cliente === userId) : [];
         console.log('Orçamentos filtrados:', orcamentosDoUsuario);
+        console.log('Total de orçamentos encontrados:', orcamentosDoUsuario.length);
         
         setOrcamentos(orcamentosDoUsuario);
       } catch (err) {
@@ -61,12 +75,7 @@ const Orcamentos = () => {
       }
     };
 
-    if (userId && token) {
-      fetchOrcamentos();
-    } else {
-      setError('Usuário não autenticado');
-      setLoading(false);
-    }
+    fetchOrcamentos();
   }, [userId, token]);
 
   // Transforma os dados no formato que o <Table> espera
