@@ -199,3 +199,26 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: '--prod'
+
+      - name: Enviar E-mail de Notificação de Falha
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.MAIL_SERVER }}
+          server_port: ${{ secrets.MAIL_PORT }}
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: '🚨 FALHA no Pipeline CI/CD Frontend - Branch: ${{ github.ref_name }}'
+          body: |
+            O pipeline CI/CD do Frontend falhou.
+            Repositório: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            Autor: ${{ github.actor }}
+
+            Detalhes da execução:
+            Link do Workflow: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Por favor, verifique os logs para mais informações.
+          to: ${{ secrets.MAIL_TO }}
+          from: 'GitHub Actions <${{ secrets.MAIL_USERNAME }}>'
