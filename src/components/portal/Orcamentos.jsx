@@ -5,21 +5,6 @@ const Orcamentos = () => {
   const [orcamentos, setOrcamentos] = useState([]);
   const userId = localStorage.getItem('userId'); // ou o método que você usa para guardar o login
 
-  useEffect(() => {
-    fetch(`https://backend-adacompany.onrender.com/api/contratos=${userId}`)
-      .then(res => res.json())
-      .then(data => setOrcamentos(data))
-      .catch(err => console.error('Erro ao buscar orçamentos:', err));
-  }, []);
-
-  // Transforma os dados no formato que o <Table> espera
-  const rows = orcamentos.map(o => [
-    o.nomeServico || '—',
-    new Date(o.data).toLocaleDateString(),
-    `R$ ${Number(o.valor).toFixed(2)}`,
-    formatarStatus(o.status),
-  ]);
-
   // Função para deixar o status bonito
   const formatarStatus = (status) => {
     switch (status) {
@@ -31,6 +16,25 @@ const Orcamentos = () => {
       default: return 'Pendente';
     }
   };
+
+  useEffect(() => {
+    fetch(`https://backend-adacompany.onrender.com/api/orcamentos`)
+      .then(res => res.json())
+      .then(data => {
+        // Filtra os orçamentos do usuário logado
+        const orcamentosDoUsuario = data.data ? data.data.filter(o => o.id_cliente === userId) : [];
+        setOrcamentos(orcamentosDoUsuario);
+      })
+      .catch(err => console.error('Erro ao buscar orçamentos:', err));
+  }, [userId]);
+
+  // Transforma os dados no formato que o <Table> espera
+  const rows = orcamentos.map(o => [
+    o.pacote?.nome || '—',
+    new Date(o.data_orcamento).toLocaleDateString(),
+    `R$ ${Number(o.valor_orcamento).toFixed(2)}`,
+    formatarStatus(o.status),
+  ]);
 
   return (
     <div>
