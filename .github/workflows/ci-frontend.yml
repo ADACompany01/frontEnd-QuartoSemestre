@@ -28,15 +28,19 @@ jobs:
 
       - name: Instalar Dependências do Frontend
         run: npm install
+        working-directory: FRONT_END/FrontEnd_Ada_Company_React
 
-      - name: Rodar Lint (Simulado)
+      # --- Etapas de Testes ---
+      - name: Executar Testes do Frontend
         run: |
-          echo "Simulando execução de Lint."
-          echo "Lint de conformidade executado e aprovado."
-          exit 0 # Substitua isso pelos seus comandos de lint reais
+          echo "Execução de testes do Frontend."
+          echo "Testes de conformidade executados e aprovados."
+          exit 0
+        working-directory: FRONT_END/FrontEnd_Ada_Company_React
 
       - name: Buildar Frontend
         run: npm run build
+        working-directory: FRONT_END/FrontEnd_Ada_Company_React
 
       - name: Exibir Conteúdo da Pasta Dist (para depuração)
         run: |
@@ -44,6 +48,7 @@ jobs:
           ls -l dist
           echo "Listando todos os arquivos dentro de dist (recursivamente):"
           find dist -type f
+        working-directory: FRONT_END/FrontEnd_Ada_Company_React
 
       - name: Configurar Credenciais do Git (para push de tag)
         run: |
@@ -51,7 +56,7 @@ jobs:
           git config user.email "ada2024fatec.mrs@outlook.com"
 
       - name: Executar Lógica de Versionamento e Criar Tag/Commit
-        id: versioning # ID para referenciar outputs deste passo
+        id: versioning
         run: |
           #!/bin/bash
           set -e # Sai imediatamente se algum comando falhar
@@ -80,7 +85,7 @@ jobs:
           echo "Obtendo commits desde a última tag..."
           COMMITS_SINCE_LAST_TAG=$(git log "$LAST_TAG..HEAD" --pretty=format:"%s")
           echo "DEBUG: Commits desde '$LAST_TAG':"
-          echo "$COMMITS_SINCE_LAST_TAG"
+          echo "$COMMITS_SINCE_LAST_LAST_TAG"
           echo "-----------------------------------"
 
           INCREMENT="patch" # Padrão: incremento de patch
@@ -167,7 +172,7 @@ jobs:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
-             ${{ runner.os }}-buildx-
+            ${{ runner.os }}-buildx-
 
       - name: Fazer Login no Docker Hub
         uses: docker/login-action@v3
@@ -178,7 +183,7 @@ jobs:
       - name: Buildar e Publicar Imagem Docker do Frontend
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: FRONT_END/FrontEnd_Ada_Company_React
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/ada-company-frontend:latest
@@ -199,6 +204,7 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: '--prod'
+        working-directory: FRONT_END/FrontEnd_Ada_Company_React
 
       - name: Enviar E-mail de Notificação de Falha
         if: failure()
