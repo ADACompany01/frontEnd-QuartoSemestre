@@ -1,6 +1,5 @@
 name: Frontend CI/CD - Build, Versionamento e Imagem Dockerhub
 
-
 on:
   push:
     branches:
@@ -14,13 +13,13 @@ jobs:
   build_version_docker:
     runs-on: ubuntu-latest
     permissions:
-      contents: write 
+      contents: write
 
     steps:
       - name: Checkout do Código
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
@@ -34,10 +33,10 @@ jobs:
         run: |
           echo "Simulando execução de Lint."
           echo "Lint de conformidade executado e aprovado."
-          exit 0
+          exit 0 # Substitua isso pelos seus comandos de lint reais
 
       - name: Buildar Frontend
-        run: npm run build 
+        run: npm run build
 
       - name: Exibir Conteúdo da Pasta Dist (para depuração)
         run: |
@@ -52,17 +51,17 @@ jobs:
           git config user.email "ada2024fatec.mrs@outlook.com"
 
       - name: Executar Lógica de Versionamento e Criar Tag/Commit
-        id: versioning 
+        id: versioning # ID para referenciar outputs deste passo
         run: |
           #!/bin/bash
           set -e # Sai imediatamente se algum comando falhar
 
-          echo "--- Iniciando processo de versionamento para backend ---"
-          
-          # Buscar apenas tags de backend (prefixo 'v')
+          echo "--- Iniciando processo de versionamento para frontend ---"
+
+          # Buscar apenas tags de frontend (prefixo 'v')
           # Garante que só pegamos tags como v1.0.0, v2.1.5, etc.
           LAST_TAG=$(git tag --sort=-creatordate | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n1 || echo "")
-          
+
           echo "DEBUG: Valor inicial de LAST_TAG: '$LAST_TAG'"
 
           if [ -z "$LAST_TAG" ]; then
@@ -70,7 +69,7 @@ jobs:
               LAST_TAG="v0.0.0"
           fi
 
-          echo "Última tag de backend considerada: $LAST_TAG"
+          echo "Última tag de frontend considerada: $LAST_TAG"
 
           # Extrair componentes da versão
           VERSION_WITHOUT_V=${LAST_TAG#v}
@@ -112,11 +111,10 @@ jobs:
           echo "Nova versão calculada: $NEW_VERSION"
 
           # Verificar se a nova versão é a mesma da última tag (caso não haja commits relevantes)
+          # ou se a nova versão já é uma tag existente
           if [ "$NEW_VERSION" == "$LAST_TAG" ] && [ "$LAST_TAG" != "v0.0.0" ]; then
             echo "A nova versão ($NEW_VERSION) é a mesma da última tag existente ($LAST_TAG). Não há necessidade de criar uma nova tag ou fazer push."
-            # Neste caso, não criamos a tag e saímos sem erro, mas a imagem Docker NÃO será publicada com uma nova tag
-            # Você pode ajustar este comportamento se quiser forçar uma nova tag mesmo sem mudanças.
-            echo "NEW_VERSION=" >> $GITHUB_OUTPUT # Garante que output esteja vazio para os próximos steps
+            echo "NEW_VERSION=" >> "$GITHUB_OUTPUT" # Garante que output esteja vazio para os próximos steps
             exit 0 # Sai do script com sucesso
           fi
 
@@ -125,18 +123,31 @@ jobs:
           git add VERSION.txt
           echo "DEBUG: Adicionado VERSION.txt ao git"
 
-          # Configurar git
+          # Configurar git (já feito em um passo anterior, mas bom ter aqui para garantir)
+          # As configurações globais persistem, mas esta é uma redundância segura.
           git config user.name "ADACompany01"
           git config user.email "ada2024fatec.mrs@outlook.com"
           echo "DEBUG: Configuração do Git definida"
 
-          # Commit e tag
-          echo "DEBUG: Realizando commit com a nova versão..."
-          git commit -m "chore: release $NEW_VERSION [skip ci]"
-          echo "DEBUG: Criando tag '$NEW_VERSION'..."
-          git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"
+          # Verificar se há alterações para commitar (além do VERSION.txt que pode já estar ok)
+          if ! git diff --staged --quiet; then
+              echo "DEBUG: Alterações staged encontradas. Realizando commit com a nova versão..."
+              git commit -m "chore: release $NEW_VERSION [skip ci]"
+              echo "DEBUG: Commit da nova versão realizado."
+          else
+              echo "DEBUG: Nenhuma alteração nova para commitar (VERSION.txt já reflete $NEW_VERSION ou não há outras mudanças)."
+          fi
 
-          # Push do commit e da tag
+          # Criar e/ou verificar a tag
+          if git tag --list | grep -q "^$NEW_VERSION$"; then
+              echo "DEBUG: Tag '$NEW_VERSION' já existe localmente."
+          else
+              echo "DEBUG: Criando tag '$NEW_VERSION'..."
+              git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"
+              echo "DEBUG: Tag '$NEW_VERSION' criada localmente."
+          fi
+
+          # Push do commit (se houve um novo) e da tag
           echo "DEBUG: Fazendo push para 'main'..."
           git push origin main
           echo "DEBUG: Fazendo push da tag '$NEW_VERSION'..."
@@ -145,7 +156,7 @@ jobs:
 
           # Output para os próximos steps
           echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_OUTPUT"
-          echo "--- Processo de versionamento de backend concluído ---"
+          echo "--- Processo de versionamento de frontend concluído ---"
 
       - name: Configurar Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -156,7 +167,7 @@ jobs:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+             ${{ runner.os }}-buildx-
 
       - name: Fazer Login no Docker Hub
         uses: docker/login-action@v3
@@ -169,7 +180,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: | 
+          tags: |
             ${{ secrets.DOCKER_USERNAME }}/ada-company-frontend:latest
             ${{ secrets.DOCKER_USERNAME }}/ada-company-frontend:${{ github.ref_name }}
             ${{ secrets.DOCKER_USERNAME }}/ada-company-frontend:${{ steps.versioning.outputs.new_version }}
