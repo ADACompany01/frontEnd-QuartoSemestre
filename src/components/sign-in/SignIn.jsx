@@ -21,7 +21,6 @@ export default function SignIn() {
 
       if (response.ok) {
         const result = await response.json();
-<<<<<<< Updated upstream
 
         // Verifica se o token foi retornado antes de salvá-lo
         if (result.token) {
@@ -44,14 +43,6 @@ export default function SignIn() {
         } else {
           console.error('Token de autenticação não encontrado na resposta');
         }
-=======
-        const token = result.token;
-        localStorage.setItem('token', token);
-        const decoded = jwtDecode(token);
-        const role = decoded.role;
-        localStorage.setItem('userRole', role);
-        navigate(role === 'cliente' ? '/portalcliente' : '/admin');
->>>>>>> Stashed changes
       } else {
         setErro('Credenciais inválidas. Tente novamente.');
       }
