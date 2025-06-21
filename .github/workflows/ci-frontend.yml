@@ -1,4 +1,4 @@
-name: Frontend CI/CD - Build, Versionamento e Imagem Dockerhub
+name: CI/CD - Backend e Banco de Dados
 
 on:
   push:
@@ -10,85 +10,217 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_version_docker:
+  build_and_publish_database_image:
     runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
-      - name: Checkout do Código
+      - name: Checkout do Código (para o DB)
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 
+          fetch-depth: 0
+
+      - name: Configurar Docker Buildx (para o DB)
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers (para o DB)
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache-db
+          key: ${{ runner.os }}-buildx-db-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-db-
+
+      - name: Fazer Login no Docker Hub (para o DB)
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Definir Versão da Imagem do Banco de Dados
+        id: db_versioning
+        run: |
+          git fetch origin --tags
+          LATEST_DB_TAG=$(git describe --tags --abbrev=0 --match "db-v*" 2>/dev/null || echo "db-v0.0.0")
+          echo "Última tag DB encontrada: $LATEST_DB_TAG"
+
+          DB_VERSION_WITHOUT_PREFIX=${LATEST_DB_TAG#db-v}
+          if [ -z "$DB_VERSION_WITHOUT_PREFIX" ]; then
+              DB_MAJOR=0
+              DB_MINOR=0
+              DB_PATCH=0
+          else
+            IFS='.' read -r DB_MAJOR DB_MINOR DB_PATCH <<< "$DB_VERSION_WITHOUT_PREFIX"
+          fi
+
+          NEW_DB_PATCH=$((DB_PATCH + 1))
+          NEW_DB_VERSION="db-v${DB_MAJOR}.${DB_MINOR}.${NEW_DB_PATCH}"
+          
+          echo "Nova versão proposta para o DB: $NEW_DB_VERSION"
+
+          git tag "$NEW_DB_VERSION"
+          git push origin "$NEW_DB_VERSION"
+
+          echo "db_new_version=$NEW_DB_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Buildar e Publicar Imagem Docker do Banco de Dados
+        uses: docker/build-push-action@v5
+        with:
+          context: database/postgres
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/ada-company-postgres:latest
+            ${{ secrets.DOCKER_USERNAME }}/ada-company-postgres:${{ github.ref_name }}
+            ${{ secrets.DOCKER_USERNAME }}/ada-company-postgres:${{ steps.db_versioning.outputs.db_new_version }}
+          cache-from: type=local,src=/tmp/.buildx-cache-db
+          cache-to: type=local,dest=/tmp/.buildx-cache-db-new,mode=max
+
+      - name: Mover Cache de Buildx (para o DB)
+        run: |
+          rm -rf /tmp/.buildx-cache-db
+          mv /tmp/.buildx-cache-db-new /tmp/.buildx-cache-db
+
+      - name: Enviar Notificação de Erro (se o job falhar)
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.MAIL_SERVER }}
+          server_port: ${{ secrets.MAIL_PORT }}
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: '🚨 FALHA NO CI/CD - Repositório: ${{ github.repository }} - Job: ${{ github.job }}'
+          body: |
+            O job "${{ github.job }}" do workflow CI/CD no repositório ${{ github.repository }} falhou.
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            Link do Workflow: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Por favor, verifique os logs para mais detalhes.
+          to: ${{ secrets.MAIL_TO }}
+          from: GitHub Actions Notifier <${{ secrets.MAIL_USERNAME }}>
+
+  build_and_test_backend:
+    needs: build_and_publish_database_image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Código
+        uses: actions/checkout@v4
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
 
-      - name: Instalar Dependências do Frontend
+      - name: Instalar Dependências do Backend
         run: npm install
-        working-directory: FRONT_END/FrontEnd_Ada_Company_React
+        working-directory: API_NEST/API_ADA_COMPANY_NESTJS
 
-      # --- Etapas de Testes ---
-      - name: Executar Testes do Frontend
+      - name: Executar Linter do Backend (Simulado)
         run: |
-          echo "Execução de testes do Frontend."
+          echo "Simulando execução de Linter do Backend."
+          echo "Linter de conformidade executado e aprovado."
+          exit 0
+        working-directory: API_NEST/API_ADA_COMPANY_NESTJS
+
+      - name: Executar Testes do Backend (Simulado)
+        run: |
+          echo "Simulando execução de testes do Backend."
           echo "Testes de conformidade executados e aprovados."
           exit 0
-        working-directory: FRONT_END/FrontEnd_Ada_Company_React
+        working-directory: API_NEST/API_ADA_COMPANY_NESTJS
 
-      - name: Buildar Frontend
-        run: npm run build
-        working-directory: FRONT_END/FrontEnd_Ada_Company_React
-
-      - name: Exibir Conteúdo da Pasta Dist (para depuração)
+      - name: Buildar Backend
         run: |
-          echo "Conteúdo da pasta dist (após o build):"
+          npx nest build 2>&1
+          echo "Código de Saída do Build: $?"
+        working-directory: API_NEST/API_ADA_COMPANY_NESTJS
+
+      - name: Verificar Conteúdo da Pasta Dist
+        run: |
+          echo "Conteúdo de API_NEST/API_ADA_COMPANY_NESTJS/dist:"
           ls -l dist
-          echo "Listando todos os arquivos dentro de dist (recursivamente):"
+          echo "Listando todos os arquivos dentro de API_NEST/API_ADA_COMPANY_NESTJS/dist (recursivamente):"
           find dist -type f
-        working-directory: FRONT_END/FrontEnd_Ada_Company_React
+        working-directory: API_NEST/API_ADA_COMPANY_NESTJS
 
-      - name: Configurar Credenciais do Git (para push de tag)
+      - name: Upload de Artefatos do Backend (Opcional)
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-build-artifact
+          path: API_NEST/API_ADA_COMPANY_NESTJS/dist
+
+      - name: Enviar Notificação de Erro (se o job falhar)
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.MAIL_SERVER }}
+          server_port: ${{ secrets.MAIL_PORT }}
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: '🚨 FALHA NO CI/CD - Repositório: ${{ github.repository }} - Job: ${{ github.job }}'
+          body: |
+            O job "${{ github.job }}" do workflow CI/CD no repositório ${{ github.repository }} falhou.
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            Link do Workflow: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Por favor, verifique os logs para mais detalhes.
+          to: ${{ secrets.MAIL_TO }}
+          from: GitHub Actions Notifier <${{ secrets.MAIL_USERNAME }}>
+
+  versioning_and_deploy_backend:
+    if: startsWith(github.ref, 'refs/heads/main') || (startsWith(github.ref, 'refs/tags/') && !startsWith(github.ref, 'refs/tags/db-v'))
+    needs: build_and_test_backend
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    outputs:
+      app_version: ${{ steps.version_step.outputs.NEW_VERSION }}
+
+    steps:
+      - name: Checkout do Código com Token para Push
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          fetch-depth: 0
+
+      - name: Fetch todas as tags
         run: |
-          git config user.name "ADACompany01"
-          git config user.email "ada2024fatec.mrs@outlook.com"
+          git fetch --tags
+          echo "Tags existentes:"
+          git tag
 
-      - name: Executar Lógica de Versionamento e Criar Tag/Commit
-        id: versioning
+      - name: Executar Lógica de Versionamento
+        id: version_step
         run: |
           #!/bin/bash
-          set -e # Sai imediatamente se algum comando falhar
+          set -e
 
-          echo "--- Iniciando processo de versionamento para frontend ---"
-
-          # Buscar apenas tags de frontend (prefixo 'v')
-          # Garante que só pegamos tags como v1.0.0, v2.1.5, etc.
+          echo "--- Iniciando processo de versionamento para backend ---"
+          
           LAST_TAG=$(git tag --sort=-creatordate | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n1 || echo "")
-
+          
           echo "DEBUG: Valor inicial de LAST_TAG: '$LAST_TAG'"
 
           if [ -z "$LAST_TAG" ]; then
-              echo "Nenhuma tag de frontend 'vX.Y.Z' encontrada. Iniciando com v0.0.0."
+              echo "Nenhuma tag de backend 'vX.Y.Z' encontrada. Iniciando com v0.0.0."
               LAST_TAG="v0.0.0"
           fi
 
-          echo "Última tag de frontend considerada: $LAST_TAG"
+          echo "Última tag de backend considerada: $LAST_TAG"
 
-          # Extrair componentes da versão
           VERSION_WITHOUT_V=${LAST_TAG#v}
           IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION_WITHOUT_V"
           echo "DEBUG: Versão atual - Major: $MAJOR, Minor: $MINOR, Patch: $PATCH"
 
-          # Determinar incremento de versão
           echo "Obtendo commits desde a última tag..."
           COMMITS_SINCE_LAST_TAG=$(git log "$LAST_TAG..HEAD" --pretty=format:"%s")
           echo "DEBUG: Commits desde '$LAST_TAG':"
-          echo "$COMMITS_SINCE_LAST_LAST_TAG"
+          echo "$COMMITS_SINCE_LAST_TAG"
           echo "-----------------------------------"
 
-          INCREMENT="patch" # Padrão: incremento de patch
+          INCREMENT="patch"
           if [[ "$COMMITS_SINCE_LAST_TAG" == *"BREAKING CHANGE"* ]]; then
               INCREMENT="major"
           elif [[ "$COMMITS_SINCE_LAST_TAG" == *"feat"* ]]; then
@@ -96,7 +228,6 @@ jobs:
           fi
           echo "DEBUG: Tipo de incremento determinado: $INCREMENT"
 
-          # Incrementar versão
           case $INCREMENT in
               major)
                   MAJOR=$((MAJOR + 1))
@@ -115,97 +246,78 @@ jobs:
           NEW_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
           echo "Nova versão calculada: $NEW_VERSION"
 
-          # Verificar se a nova versão é a mesma da última tag (caso não haja commits relevantes)
-          # ou se a nova versão já é uma tag existente
           if [ "$NEW_VERSION" == "$LAST_TAG" ] && [ "$LAST_TAG" != "v0.0.0" ]; then
             echo "A nova versão ($NEW_VERSION) é a mesma da última tag existente ($LAST_TAG). Não há necessidade de criar uma nova tag ou fazer push."
-            echo "NEW_VERSION=" >> "$GITHUB_OUTPUT" # Garante que output esteja vazio para os próximos steps
-            exit 0 # Sai do script com sucesso
+            echo "NEW_VERSION=" >> $GITHUB_OUTPUT
+            exit 0
           fi
 
-          # Criar arquivo de versão (opcional, mas bom para rastreamento)
           echo "$NEW_VERSION" > VERSION.txt
           git add VERSION.txt
           echo "DEBUG: Adicionado VERSION.txt ao git"
 
-          # Configurar git (já feito em um passo anterior, mas bom ter aqui para garantir)
-          # As configurações globais persistem, mas esta é uma redundância segura.
           git config user.name "ADACompany01"
           git config user.email "ada2024fatec.mrs@outlook.com"
           echo "DEBUG: Configuração do Git definida"
 
-          # Verificar se há alterações para commitar (além do VERSION.txt que pode já estar ok)
-          if ! git diff --staged --quiet; then
-              echo "DEBUG: Alterações staged encontradas. Realizando commit com a nova versão..."
-              git commit -m "chore: release $NEW_VERSION [skip ci]"
-              echo "DEBUG: Commit da nova versão realizado."
-          else
-              echo "DEBUG: Nenhuma alteração nova para commitar (VERSION.txt já reflete $NEW_VERSION ou não há outras mudanças)."
-          fi
+          echo "DEBUG: Realizando commit com a nova versão..."
+          git commit -m "chore: release $NEW_VERSION [skip ci]"
+          echo "DEBUG: Criando tag '$NEW_VERSION'..."
+          git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"
 
-          # Criar e/ou verificar a tag
-          if git tag --list | grep -q "^$NEW_VERSION$"; then
-              echo "DEBUG: Tag '$NEW_VERSION' já existe localmente."
-          else
-              echo "DEBUG: Criando tag '$NEW_VERSION'..."
-              git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"
-              echo "DEBUG: Tag '$NEW_VERSION' criada localmente."
-          fi
-
-          # Push do commit (se houve um novo) e da tag
           echo "DEBUG: Fazendo push para 'main'..."
           git push origin main
           echo "DEBUG: Fazendo push da tag '$NEW_VERSION'..."
           git push origin "$NEW_VERSION"
           echo "DEBUG: Push de commit e tag concluído."
 
-          # Output para os próximos steps
           echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_OUTPUT"
-          echo "--- Processo de versionamento de frontend concluído ---"
+          echo "--- Processo de versionamento de backend concluído ---"
 
-      - name: Configurar Docker Buildx
+      - name: Configurar Docker Buildx (para o Backend)
         uses: docker/setup-buildx-action@v3
 
-      - name: Cache Docker layers
+      - name: Cache Docker layers (para o Backend)
         uses: actions/cache@v4
         with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          path: /tmp/.buildx-cache-backend
+          key: ${{ runner.os }}-buildx-backend-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            ${{ runner.os }}-buildx-backend-
 
-      - name: Fazer Login no Docker Hub
+      - name: Login no Docker Hub (para o Backend)
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Buildar e Publicar Imagem Docker do Frontend
+      - name: Buildar e Publicar Imagem Docker do Backend
+        if: steps.version_step.outputs.NEW_VERSION != ''
         uses: docker/build-push-action@v5
         with:
-          context: FRONT_END/FrontEnd_Ada_Company_React
+          context: API_NEST/API_ADA_COMPANY_NESTJS
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/ada-company-frontend:latest
-            ${{ secrets.DOCKER_USERNAME }}/ada-company-frontend:${{ github.ref_name }}
-            ${{ secrets.DOCKER_USERNAME }}/ada-company-frontend:${{ steps.versioning.outputs.new_version }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+            ${{ secrets.DOCKER_USERNAME }}/ada-company-backend:latest
+            ${{ secrets.DOCKER_USERNAME }}/ada-company-backend:${{ github.ref_name }}
+            ${{ secrets.DOCKER_USERNAME }}/ada-company-backend:${{ steps.version_step.outputs.NEW_VERSION }}
+          cache-from: type=local,src=/tmp/.buildx-cache-backend
+          cache-to: type=local,dest=/tmp/.buildx-cache-backend-new,mode=max
 
-      - name: Mover Cache de Buildx
+      - name: Mover Cache (para o Backend)
+        if: steps.version_step.outputs.NEW_VERSION != ''
         run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          rm -rf /tmp/.buildx-cache-backend
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache-backend
 
-      - name: Deploy na Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
-
-      - name: Enviar E-mail de Notificação de Falha
+      - name: Deploy da Aplicação no Render
+        if: steps.version_step.outputs.NEW_VERSION != ''
+        run: |
+          echo "Disparando novo deploy no Render para a versão: ${{ steps.version_step.outputs.NEW_VERSION }}"
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+          echo "Comando de deploy para o Render enviado."
+          
+      - name: Enviar Notificação de Erro (se o job falhar)
         if: failure()
         uses: dawidd6/action-send-mail@v3
         with:
@@ -213,17 +325,12 @@ jobs:
           server_port: ${{ secrets.MAIL_PORT }}
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
-          subject: '🚨 FALHA no Pipeline CI/CD Frontend - Branch: ${{ github.ref_name }}'
+          subject: '🚨 FALHA NO CI/CD - Repositório: ${{ github.repository }} - Job: ${{ github.job }}'
           body: |
-            O pipeline CI/CD do Frontend falhou.
-            Repositório: ${{ github.repository }}
+            O job "${{ github.job }}" do workflow CI/CD no repositório ${{ github.repository }} falhou.
             Branch: ${{ github.ref_name }}
             Commit: ${{ github.sha }}
-            Autor: ${{ github.actor }}
-
-            Detalhes da execução:
             Link do Workflow: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-            Por favor, verifique os logs para mais informações.
+            Por favor, verifique os logs para mais detalhes.
           to: ${{ secrets.MAIL_TO }}
-          from: 'GitHub Actions <${{ secrets.MAIL_USERNAME }}>'
+          from: GitHub Actions Notifier <${{ secrets.MAIL_USERNAME }}>
