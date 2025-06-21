@@ -4,6 +4,9 @@
   align-items: center;
   text-align: center;
   gap: 16px;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .dashboard-title {
@@ -13,7 +16,7 @@
 
 .dashboard-input {
   width: 100%;
-  max-width: 500px;
+  max-width: 700px;
   padding: 10px;
   border-radius: 6px;
   border: 1px solid #ccc;
@@ -49,7 +52,7 @@
   background-color: #4f51d4;
   color: white;
   padding: 20px;
-  height: 789px;
+  height: 1200px;
 }
 
 .portal-sidebar h2 {
@@ -81,10 +84,10 @@
 
 .portal-header {
   margin-bottom: 20px;
+  text-align: center;
 }
 
 .portal-dashboard {
-  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 20px;
 }
@@ -146,4 +149,133 @@
   border: none;
   color: #4f51d4;
   cursor: pointer;
+}
+
+/* Estilos para a seção Problemas Encontrados */
+.problemas-encontrados {
+  border: 1px solid #f2c7c7;
+  background-color: #fcf2f2;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: left;
+}
+
+.problemas-encontrados-title {
+  font-size: 18px;
+  color: #c73e3e;
+  margin-top: 0;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.problemas-lista {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.problema-item {
+  border-top: 1px solid #f2c7c7;
+  padding: 15px 0;
+}
+
+.problema-item:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.problema-titulo {
+  font-weight: bold;
+  color: #c73e3e;
+  margin: 0 0 5px 0;
+}
+
+.problema-descricao p {
+  margin: 0;
+  color: #333;
+}
+
+.problema-descricao a {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.problema-descricao a:hover {
+  text-decoration: none;
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 700px;
+  padding: 20px;
+  margin: 20px auto 0 auto;
+  box-sizing: border-box;
+}
+
+.dashboard-result,
+.dashboard-recommendation,
+.dashboard-details {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.dashboard-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+@media (max-width: 768px) {
+  .portal-sidebar {
+    display: none;
+  }
+
+  .portal-main {
+    padding: 10px;
+  }
+
+  .dashboard-title {
+    font-size: 20px;
+  }
+
+  .dashboard-input {
+    width: 100%;
+  }
+
+  .dashboard-button {
+    width: 100%;
+    max-width: none;
+  }
+
+  .dashboard-result,
+  .dashboard-recommendation,
+  .dashboard-details {
+    padding: 10px;
+  }
+
+  .problema-titulo {
+    font-size: 16px;
+  }
+
+  .problemas-encontrados-title {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-title {
+    font-size: 18px;
+  }
+
+  .portal-button {
+    padding: 10px;
+    font-size: 14px;
+  }
 }

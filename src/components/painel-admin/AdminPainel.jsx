@@ -5,7 +5,7 @@ const AdminPainel = () => {
   const [contratos, setContratos] = useState([]);
 
   useEffect(() => {
-    fetch("https://backend-adacompany.onrender.com/api/contratos", {
+    fetch("http://localhost:3000/contratos", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -16,7 +16,7 @@ const AdminPainel = () => {
   }, []);
 
   const atualizarStatus = (id, status) => {
-    fetch(`https://backend-adacompany.onrender.com/api/contratos/${id}`, {
+    fetch(`http://localhost:3000/contratos${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

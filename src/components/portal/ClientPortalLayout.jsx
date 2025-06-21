@@ -8,7 +8,7 @@ const ClientPortalLayout = () => {
       <Sidebar />
       <main className="portal-main">
         <header className="portal-header">
-          <h1>Olá, Nome do Cliente</h1>
+          <h1>Olá, Seja bem-vindo</h1>
         </header>
         <Outlet />
       </main>
