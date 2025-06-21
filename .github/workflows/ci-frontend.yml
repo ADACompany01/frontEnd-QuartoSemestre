@@ -28,18 +28,15 @@ jobs:
 
       - name: Instalar Dependências do Frontend
         run: npm install
-        working-directory: FRONT_END/FrontEnd_Ada_Company_React
 
       - name: Executar Testes do Frontend
         run: |
           echo "Execução de testes do Frontend."
           echo "Testes de conformidade executados e aprovados."
           exit 0
-        working-directory: FRONT_END/FrontEnd_Ada_Company_React
 
       - name: Buildar Frontend
         run: npm run build
-        working-directory: FRONT_END/FrontEnd_Ada_Company_React
 
       - name: Exibir Conteúdo da Pasta Dist (para depuração)
         run: |
@@ -47,13 +44,11 @@ jobs:
           ls -l dist
           echo "Listando todos os arquivos dentro de dist (recursivamente):"
           find dist -type f
-        working-directory: FRONT_END/FrontEnd_Ada_Company_React
 
       - name: Configurar Credenciais do Git (para push de tag)
         run: |
           git config user.name "ADACompany01"
           git config user.email "ada2024fatec.mrs@outlook.com"
-        working-directory: FRONT_END/FrontEnd_Ada_Company_React
 
       - name: Executar Lógica de Versionamento e Criar Tag/Commit
         id: versioning
@@ -147,7 +142,6 @@ jobs:
 
           echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_OUTPUT"
           echo "--- Processo de versionamento de frontend concluído ---"
-        working-directory: FRONT_END/FrontEnd_Ada_Company_React
 
       - name: Configurar Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -169,7 +163,7 @@ jobs:
       - name: Buildar e Publicar Imagem Docker do Frontend
         uses: docker/build-push-action@v5
         with:
-          context: FRONT_END/FrontEnd_Ada_Company_React
+          context: .
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/ada-company-frontend:latest
