@@ -45,7 +45,7 @@ export default function SignIn() {
           if (userRole === 'cliente') {
             navigate('/portalcliente');
           } else if (userRole === 'funcionario') {
-            navigate('/portalcliente');
+            navigate('/admin');
           } else {
             navigate('/');
           }
