@@ -17,7 +17,7 @@ export default function SignUpClient() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://backend-adacompany.onrender.com/clientes', {
+      const response = await fetch('https://backend-adacompany.onrender.com/clientes/cadastro', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
