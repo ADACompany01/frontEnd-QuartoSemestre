@@ -16,22 +16,56 @@ const AdminPainel = () => {
         const token = localStorage.getItem("token");
         console.log('Token:', token ? 'Presente' : 'Ausente');
         
-        const response = await fetch("https://backend-adacompany.onrender.com/contratos", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        // Tentar diferentes endpoints possíveis
+        const endpoints = [
+          "https://backend-adacompany.onrender.com/contratos",
+          "https://backend-adacompany.onrender.com/contrato",
+          "https://backend-adacompany.onrender.com/api/contratos",
+          "https://backend-adacompany.onrender.com/api/contrato"
+        ];
         
-        console.log('Status da resposta:', response.status);
+        let data = null;
+        let usedEndpoint = "";
         
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.log('Erro da resposta:', errorText);
-          throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+        for (const endpoint of endpoints) {
+          try {
+            console.log('Tentando endpoint:', endpoint);
+            const response = await fetch(endpoint, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            
+            console.log('Status da resposta para', endpoint, ':', response.status);
+            
+            if (response.ok) {
+              data = await response.json();
+              usedEndpoint = endpoint;
+              console.log('Sucesso com endpoint:', endpoint);
+              console.log('Dados recebidos:', data);
+              break;
+            }
+          } catch (err) {
+            console.log('Erro com endpoint', endpoint, ':', err.message);
+          }
         }
-
-        const data = await response.json();
-        console.log('Dados recebidos:', data);
+        
+        if (!data) {
+          throw new Error('Nenhum endpoint de contratos funcionou');
+        }
+        
+        // Verificar se os dados são realmente contratos
+        if (data.data && Array.isArray(data.data)) {
+          const firstItem = data.data[0];
+          console.log('Primeiro item:', firstItem);
+          
+          // Se tem campos de orçamento, pode ser que o endpoint esteja retornando orçamentos
+          if (firstItem && (firstItem.cod_orcamento || firstItem.valor_orcamento)) {
+            console.warn('ATENÇÃO: O endpoint está retornando orçamentos em vez de contratos!');
+            console.warn('Endpoint usado:', usedEndpoint);
+            console.warn('Dados recebidos:', data);
+          }
+        }
         
         setContratos(data.data || data || []);
       } catch (err) {
@@ -101,21 +135,22 @@ const AdminPainel = () => {
           </thead>
           <tbody>
             {contratos.map((c) => (
-              <tr key={c.id_contrato}>
+              <tr key={c.id_contrato || c.cod_orcamento}>
                 <td>
                   {c.orcamento?.pacote?.cliente?.nome || 
                    c.orcamento?.cliente?.nome || 
-                   c.cliente?.nome || 
+                   c.cliente?.nome ||
+                   c.pacote?.cliente?.nome ||
                    "—"}
                 </td>
                 <td>{c.data_inicio ? new Date(c.data_inicio).toLocaleDateString() : "—"}</td>
                 <td>{c.data_entrega ? new Date(c.data_entrega).toLocaleDateString() : "—"}</td>
-                <td>R$ {Number(c.valor_contrato || 0).toFixed(2)}</td>
-                <td>{formatarStatus(c.status_contrato)}</td>
+                <td>R$ {Number(c.valor_contrato || c.valor_orcamento || 0).toFixed(2)}</td>
+                <td>{formatarStatus(c.status_contrato || c.status)}</td>
                 <td>
                   <select
-                    value={c.status_contrato || ""}
-                    onChange={(e) => atualizarStatus(c.id_contrato, e.target.value)}
+                    value={c.status_contrato || c.status || ""}
+                    onChange={(e) => atualizarStatus(c.id_contrato || c.cod_orcamento, e.target.value)}
                   >
                     <option value="EM_ANALISE">Em Análise</option>
                     <option value="EM_ANDAMENTO">Em Andamento</option>
@@ -138,7 +173,11 @@ const formatarStatus = (status) => {
     case 'EM_ANDAMENTO': return 'Em Andamento';
     case 'CONCLUIDO': return 'Concluído';
     case 'CANCELADO': return 'Cancelado';
-    default: return '—';
+    case 'em_analise': return 'Em Análise';
+    case 'em_andamento': return 'Em Andamento';
+    case 'concluido': return 'Concluído';
+    case 'cancelado': return 'Cancelado';
+    default: return status || '—';
   }
 };
 

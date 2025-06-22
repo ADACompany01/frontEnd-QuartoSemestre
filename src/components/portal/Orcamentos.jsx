@@ -63,7 +63,17 @@ const Orcamentos = () => {
         console.log('Dados recebidos:', data);
 
         // Filtra os orçamentos do usuário logado
-        const orcamentosDoUsuario = data.data ? data.data.filter(o => o.id_cliente === userId) : [];
+        const orcamentosDoUsuario = data.data ? data.data.filter(o => {
+          console.log('Verificando orçamento:', o);
+          console.log('ID do cliente no orçamento:', o.id_cliente);
+          console.log('ID do cliente no pacote:', o.pacote?.id_cliente);
+          console.log('User ID atual:', userId);
+          console.log('Comparação direta:', o.id_cliente === userId);
+          console.log('Comparação no pacote:', o.pacote?.id_cliente === userId);
+          
+          // Verifica tanto no orçamento quanto no pacote
+          return o.id_cliente === userId || o.pacote?.id_cliente === userId;
+        }) : [];
         console.log('Orçamentos filtrados:', orcamentosDoUsuario);
         console.log('Total de orçamentos encontrados:', orcamentosDoUsuario.length);
         
