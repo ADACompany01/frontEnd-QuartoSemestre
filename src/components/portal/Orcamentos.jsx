@@ -40,9 +40,9 @@ const Orcamentos = () => {
           throw new Error('Token não encontrado no localStorage');
         }
 
-        console.log('Fazendo requisição para:', 'https://backend-adacompany.onrender.com/orcamentos/cliente/meus');
+        console.log('Fazendo requisição para:', 'https://backend-adacompany.onrender.com/orcamentos');
 
-        const response = await fetch('https://backend-adacompany.onrender.com/orcamentos/cliente/meus', {
+        const response = await fetch('https://backend-adacompany.onrender.com/orcamentos', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
