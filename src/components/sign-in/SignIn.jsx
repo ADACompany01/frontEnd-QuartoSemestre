@@ -28,7 +28,12 @@ export default function SignIn() {
           localStorage.setItem('token', token);
           const decodedToken = jwtDecode(token);
           const userRole = decodedToken.tipo_usuario;
-          const userId = decodedToken.id || decodedToken.sub; // Extrai o ID do usuário do token
+          
+          // Tenta diferentes possíveis campos para o ID do usuário
+          const userId = decodedToken.id || decodedToken.sub || decodedToken.userId || decodedToken.user_id;
+          
+          console.log('Token decodificado:', decodedToken);
+          console.log('Campos disponíveis no token:', Object.keys(decodedToken));
           
           localStorage.setItem('userRole', userRole);
           localStorage.setItem('userId', userId); // Salva o userId no localStorage
