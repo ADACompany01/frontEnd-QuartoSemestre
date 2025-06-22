@@ -1,78 +1,118 @@
+@import "../../vars.css";
+
+.container-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
 .container {
-  padding: 2rem;
-  max-width: 1000px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  background: linear-gradient(360deg, #576cbc 20%, #4f51d4 80%);
+  box-shadow: 10px 10px 20px 0 #00000054;
+  padding: 18px 24px;
+  width: 30%;
+  height: 570px;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.image {
+  margin-bottom: 20px;
+  width: 100%;
 }
 
 .title {
+  font-size: 22px;
+  /* Tamanho consistente para todos os títulos */
+  font-weight: 700;
   text-align: center;
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 10px;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 1.5rem;
+.description {
+  font-size: 16px;
+  /* Tamanho consistente para todas as descrições */
+  font-weight: 400;
+  text-align: center;
+  margin-top: 6px;
 }
 
-.card {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
-  padding: 1.5rem;
+.skills {
+  width: 100%;
+  margin-top: 12px;
   display: flex;
-  flex-direction: column;
-  border-left: 6px solid transparent;
-  transition: transform 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-}
-
-.red {
-  border-left-color: #e63946;
-}
-
-.green {
-  border-left-color: #2a9d8f;
-}
-
-.imageWrapper {
-  width: 100%;
-  overflow: hidden;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-}
-
-.exampleImage {
-  width: 100%;
-  height: auto;
-  display: block;
-  object-fit: cover;
-  max-height: 180px;
-  border-radius: 8px;
-}
-
-h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.3rem;
-}
-
-p {
-  margin: 0 0 1rem 0;
-  font-weight: 600;
-}
-
-ul {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 6px;
   list-style: none;
-  padding-left: 0;
-  margin: 0;
+  justify-content: center;
 }
 
-li {
-  margin-bottom: 0.5rem;
-  font-size: 0.95rem;
-  line-height: 1.3;
+.skill {
+  font-size: 14px;
+  /* Tamanho consistente para todas as habilidades */
+  font-weight: 400;
+  border-radius: 100px;
+  background: #19366d57;
+  padding: 4px 12px;
+}
+
+.links {
+  width: 100%;
+  margin-top: 18px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.link {
+  text-decoration: none;
+  color: var(--color-text);
+  font-size: 16px;
+  /* Tamanho consistente para os links */
+  font-weight: 600;
+  border-radius: 100px;
+  background: #fff;
+  color: #4f51d4;
+  padding: 6px 16px;
+}
+
+.link:hover {
+  background-color: #0b2447;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .container-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 16px;
+    padding: 0;
+    margin: 0;
+    padding-inline:0;
+    scroll-padding-inline: 16px;
+  }
+
+  .container-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+
+  .container {
+    flex: 0 0 100%;
+    width: 90%;
+    min-width: 100%;
+    scroll-snap-align: start;
+    margin-right:0;
+    justify-content: start;
+  }
 }

@@ -6,7 +6,7 @@ const AdminDashboard = () => {
         title="Relatório Power BI"
         width="100%"
         height="970px"
-        src="https://app.powerbi.com/reportEmbed?reportId=2898089c-6660-403a-a8bc-b7c2e5aedeab&autoAuth=true&ctid=9f9199ee-21cb-44c4-a206-8134332e517e"
+        src="https://app.powerbi.com/reportEmbed?reportId=a3e40bc2-1e3f-4ed6-95b2-1a66fde739b4&autoAuth=true&ctid=cf72e2bd-7a2b-4783-bdeb-39d57b07f76f"
         frameBorder="0"
         allowFullScreen
       ></iframe>
