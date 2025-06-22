@@ -61,6 +61,7 @@ const Orcamentos = () => {
 
         const data = await response.json();
         console.log('Dados recebidos:', data);
+        console.log('Todos os orçamentos recebidos:', data.data);
 
         // Filtra os orçamentos do usuário logado
         const orcamentosDoUsuario = data.data ? data.data.filter(o => {
@@ -77,7 +78,24 @@ const Orcamentos = () => {
         console.log('Orçamentos filtrados:', orcamentosDoUsuario);
         console.log('Total de orçamentos encontrados:', orcamentosDoUsuario.length);
         
-        setOrcamentos(orcamentosDoUsuario);
+        // Temporariamente, vamos mostrar todos os orçamentos para debug
+        console.log('=== DEBUG: Mostrando todos os orçamentos ===');
+        if (data.data && data.data.length > 0) {
+          console.log('Orçamentos disponíveis:');
+          data.data.forEach((orc, index) => {
+            console.log(`Orçamento ${index + 1}:`, {
+              cod_orcamento: orc.cod_orcamento,
+              id_cliente_orcamento: orc.id_cliente,
+              id_cliente_pacote: orc.pacote?.id_cliente,
+              valor: orc.valor_orcamento,
+              data: orc.data_orcamento
+            });
+          });
+        }
+        
+        // TEMPORÁRIO: Mostrar todos os orçamentos para debug
+        setOrcamentos(data.data || []);
+        // setOrcamentos(orcamentosDoUsuario);
       } catch (err) {
         console.error('Erro ao buscar orçamentos:', err);
         setError(err.message);
