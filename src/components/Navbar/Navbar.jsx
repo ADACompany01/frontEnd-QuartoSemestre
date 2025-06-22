@@ -44,11 +44,15 @@ export const Navbar = () => {
   };
 
   const handlePainel = () => {
+    console.log("Painel clicked, token:", token);
     const decodedToken = jwtDecode(token);
     const userRole = decodedToken?.role; // Handle potential null value
+    console.log("User role:", userRole);
     if (userRole === "cliente") {
+      console.log("Navigating to /portalcliente");
       navigate("/portalcliente");
     } else if (userRole === "funcionario") {
+      console.log("Navigating to /admin");
       navigate("/admin");
     }
   };
@@ -86,28 +90,27 @@ export const Navbar = () => {
         />
         <ul
           className={`${styles.menuItems} ${menuOpen && styles.menuOpen}`}
-          onClick={() => setMenuOpen(false)}
         >
-          <li>
+          <li onClick={() => setMenuOpen(false)}>
             <a onClick={() => handleNavigateToSection("About")}>Serviços</a>
           </li>
-          <li>
+          <li onClick={() => setMenuOpen(false)}>
             <a onClick={() => handleNavigateToSection("projects")}>Exemplos</a>
           </li>
           {token ? (
             <>
-              <li>
+              <li onClick={() => setMenuOpen(false)}>
                 <a onClick={handlePainel}>Painel</a>
               </li>
-              <li>
+              <li onClick={() => setMenuOpen(false)}>
                 <a onClick={handleLogout}>Logout</a>
               </li>
-              <li>
+              <li onClick={() => setMenuOpen(false)}>
                 <a onClick={handleMenu}>Menu</a>
               </li>
             </>
           ) : (
-            <li>
+            <li onClick={() => setMenuOpen(false)}>
               <Link to="/signin">Login</Link>
             </li>
           )}
