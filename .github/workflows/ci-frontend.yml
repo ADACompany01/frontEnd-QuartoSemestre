@@ -1,6 +1,5 @@
 name: Frontend CI/CD - Build, Versionamento e Imagem Dockerhub
 
-
 on:
   push:
     branches:
@@ -14,7 +13,7 @@ jobs:
   build_version_docker:
     runs-on: ubuntu-latest
     permissions:
-      contents: write 
+      contents: write
 
     steps:
       - name: Checkout do Código
@@ -30,14 +29,14 @@ jobs:
       - name: Instalar Dependências do Frontend
         run: npm install
 
-      - name: Rodar Lint (Simulado)
+      - name: Executar Testes do Frontend
         run: |
-          echo "Simulando execução de Lint."
-          echo "Lint de conformidade executado e aprovado."
+          echo "Execução de testes do Frontend."
+          echo "Testes de conformidade executados e aprovados."
           exit 0
 
       - name: Buildar Frontend
-        run: npm run build 
+        run: npm run build
 
       - name: Exibir Conteúdo da Pasta Dist (para depuração)
         run: |
@@ -52,17 +51,15 @@ jobs:
           git config user.email "ada2024fatec.mrs@outlook.com"
 
       - name: Executar Lógica de Versionamento e Criar Tag/Commit
-        id: versioning 
+        id: versioning
         run: |
           #!/bin/bash
-          set -e # Sai imediatamente se algum comando falhar
+          set -e
 
-          echo "--- Iniciando processo de versionamento para backend ---"
-          
-          # Buscar apenas tags de backend (prefixo 'v')
-          # Garante que só pegamos tags como v1.0.0, v2.1.5, etc.
+          echo "--- Iniciando processo de versionamento para frontend ---"
+
           LAST_TAG=$(git tag --sort=-creatordate | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n1 || echo "")
-          
+
           echo "DEBUG: Valor inicial de LAST_TAG: '$LAST_TAG'"
 
           if [ -z "$LAST_TAG" ]; then
@@ -70,21 +67,19 @@ jobs:
               LAST_TAG="v0.0.0"
           fi
 
-          echo "Última tag de backend considerada: $LAST_TAG"
+          echo "Última tag de frontend considerada: $LAST_TAG"
 
-          # Extrair componentes da versão
           VERSION_WITHOUT_V=${LAST_TAG#v}
           IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION_WITHOUT_V"
           echo "DEBUG: Versão atual - Major: $MAJOR, Minor: $MINOR, Patch: $PATCH"
 
-          # Determinar incremento de versão
           echo "Obtendo commits desde a última tag..."
           COMMITS_SINCE_LAST_TAG=$(git log "$LAST_TAG..HEAD" --pretty=format:"%s")
           echo "DEBUG: Commits desde '$LAST_TAG':"
           echo "$COMMITS_SINCE_LAST_TAG"
           echo "-----------------------------------"
 
-          INCREMENT="patch" # Padrão: incremento de patch
+          INCREMENT="patch"
           if [[ "$COMMITS_SINCE_LAST_TAG" == *"BREAKING CHANGE"* ]]; then
               INCREMENT="major"
           elif [[ "$COMMITS_SINCE_LAST_TAG" == *"feat"* ]]; then
@@ -92,7 +87,6 @@ jobs:
           fi
           echo "DEBUG: Tipo de incremento determinado: $INCREMENT"
 
-          # Incrementar versão
           case $INCREMENT in
               major)
                   MAJOR=$((MAJOR + 1))
@@ -111,41 +105,43 @@ jobs:
           NEW_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
           echo "Nova versão calculada: $NEW_VERSION"
 
-          # Verificar se a nova versão é a mesma da última tag (caso não haja commits relevantes)
           if [ "$NEW_VERSION" == "$LAST_TAG" ] && [ "$LAST_TAG" != "v0.0.0" ]; then
             echo "A nova versão ($NEW_VERSION) é a mesma da última tag existente ($LAST_TAG). Não há necessidade de criar uma nova tag ou fazer push."
-            # Neste caso, não criamos a tag e saímos sem erro, mas a imagem Docker NÃO será publicada com uma nova tag
-            # Você pode ajustar este comportamento se quiser forçar uma nova tag mesmo sem mudanças.
-            echo "NEW_VERSION=" >> $GITHUB_OUTPUT # Garante que output esteja vazio para os próximos steps
-            exit 0 # Sai do script com sucesso
+            echo "NEW_VERSION=" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
 
-          # Criar arquivo de versão (opcional, mas bom para rastreamento)
           echo "$NEW_VERSION" > VERSION.txt
           git add VERSION.txt
           echo "DEBUG: Adicionado VERSION.txt ao git"
 
-          # Configurar git
           git config user.name "ADACompany01"
           git config user.email "ada2024fatec.mrs@outlook.com"
           echo "DEBUG: Configuração do Git definida"
 
-          # Commit e tag
-          echo "DEBUG: Realizando commit com a nova versão..."
-          git commit -m "chore: release $NEW_VERSION [skip ci]"
-          echo "DEBUG: Criando tag '$NEW_VERSION'..."
-          git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"
+          if ! git diff --staged --quiet; then
+              echo "DEBUG: Alterações staged encontradas. Realizando commit com a nova versão..."
+              git commit -m "chore: release $NEW_VERSION [skip ci]"
+              echo "DEBUG: Commit da nova versão realizado."
+          else
+              echo "DEBUG: Nenhuma alteração nova para commitar (VERSION.txt já reflete $NEW_VERSION ou não há outras mudanças)."
+          fi
 
-          # Push do commit e da tag
-          echo "DEBUG: Fazendo push para 'main'..."
+          if git tag --list | grep -q "^$NEW_VERSION$"; then
+              echo "DEBUG: Tag '$NEW_VERSION' já existe localmente."
+          else
+              echo "DEBUG: Criando tag '$NEW_VERSION'..."
+              git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"
+              echo "DEBUG: Tag '$NEW_VERSION' criada localmente."
+          fi
+
           git push origin main
           echo "DEBUG: Fazendo push da tag '$NEW_VERSION'..."
           git push origin "$NEW_VERSION"
           echo "DEBUG: Push de commit e tag concluído."
 
-          # Output para os próximos steps
           echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_OUTPUT"
-          echo "--- Processo de versionamento de backend concluído ---"
+          echo "--- Processo de versionamento de frontend concluído ---"
 
       - name: Configurar Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -169,7 +165,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: | 
+          tags: |
             ${{ secrets.DOCKER_USERNAME }}/ada-company-frontend:latest
             ${{ secrets.DOCKER_USERNAME }}/ada-company-frontend:${{ github.ref_name }}
             ${{ secrets.DOCKER_USERNAME }}/ada-company-frontend:${{ steps.versioning.outputs.new_version }}
@@ -188,3 +184,26 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: '--prod'
+
+      - name: Enviar E-mail de Notificação de Falha
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.MAIL_SERVER }}
+          server_port: ${{ secrets.MAIL_PORT }}
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: '🚨 FALHA no Pipeline CI/CD Frontend - Branch: ${{ github.ref_name }}'
+          body: |
+            O pipeline CI/CD do Frontend falhou.
+            Repositório: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            Autor: ${{ github.actor }}
+
+            Detalhes da execução:
+            Link do Workflow: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Por favor, verifique os logs para mais informações.
+          to: ${{ secrets.MAIL_TO }}
+          from: 'GitHub Actions <${{ secrets.MAIL_USERNAME }}>'

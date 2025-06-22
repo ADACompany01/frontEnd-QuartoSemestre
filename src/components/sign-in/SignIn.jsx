@@ -26,11 +26,20 @@ export default function SignIn() {
         if (result.token) {
           const token = result.token;
           localStorage.setItem('token', token);
-          localStorage.setItem('token', result.token);
           const decodedToken = jwtDecode(token);
           const userRole = decodedToken.tipo_usuario;
+          
+          // Tenta diferentes possíveis campos para o ID do usuário
+          const userId = decodedToken.id || decodedToken.sub || decodedToken.userId || decodedToken.user_id;
+          
+          console.log('Token decodificado:', decodedToken);
+          console.log('Campos disponíveis no token:', Object.keys(decodedToken));
+          
           localStorage.setItem('userRole', userRole);
+          localStorage.setItem('userId', userId); // Salva o userId no localStorage
+          
           console.log('Role do usuário:', userRole);
+          console.log('ID do usuário:', userId);
           console.log('Login com sucesso');
           alert('Login com sucesso!');
           if (userRole === 'cliente') {

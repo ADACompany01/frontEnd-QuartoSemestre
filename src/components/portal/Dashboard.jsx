@@ -51,17 +51,15 @@ const Dashboard = () => {
     setReprovadas([]);
 
     try {
-      const response = await axios.post('http://localhost:3000/lighthouse/accessibility', { url });
-      const notaAcessibilidade = response.data.notaAcessibilidade;
+      const response = await axios.post('https://backend-adacompany.onrender.com/lighthouse/accessibility', { url });
+      const notaAcessibilidade = response.data.accessibilityScore;
 
       setResult(notaAcessibilidade);
-      setReprovadas(response.data.reprovadas || []);
-
 
       if (notaAcessibilidade < 50) {
-        setRecommendation('🔴 Nota baixa: Contrate o nosso Pacote Básico de Acessibilidade para atingir uma nota média. Contate nossos especialistas para mais informações.');
+        setRecommendation('🔴 Nota baixa: Recomendamos o Pacote Básico de Acessibilidade para atingir uma nota média. Entre em contato com nossos especialistas e faça um orçamento');
       } else if (notaAcessibilidade < 80) {
-        setRecommendation('🟡 Nota média: Contrate o nosso Pacote Intermediário para atingir um bom nível de acessibilidade. Contate nossos especialistas para mais informações.');
+        setRecommendation('🟡 Nota média: Recomendamos o Pacote Intermediário para atingir um bom nível de acessibilidade. Entre em contato com nossos especialistas e faça um orçamento');
       } else {
         setRecommendation('🟢 Ótima nota! Seu site já atende bem aos padrões de acessibilidade. Caso queira melhorar ainda mais, contate o nosso Pacote Premium para garantir a melhor experiência para todos os usuários.');
       }
