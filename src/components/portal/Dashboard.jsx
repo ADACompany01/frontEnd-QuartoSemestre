@@ -1,67 +1,35 @@
 'use client';
 import React, { useState } from 'react';
 import axios from 'axios';
-import './Portal.css';
 
 const Dashboard = () => {
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [recommendation, setRecommendation] = useState('');
-  const [reprovadas, setReprovadas] = useState([]);
-
-  const renderDescription = (description) => {
-    const match = description.match(/(.*)\[(.*?)\]\((.*?)\)/);
-
-    if (match) {
-      const textBeforeLink = match[1];
-      const linkText = match[2];
-      const linkUrl = match[3];
-      return (
-        <p>
-          {textBeforeLink}
-          <a href={linkUrl} target="_blank" rel="noopener noreferrer">
-            {linkText}
-          </a>.
-        </p>
-      );
-    }
-
-    const linkOnlyMatch = description.match(/\[(.*?)\]\((.*?)\)/);
-    if (linkOnlyMatch) {
-      const linkText = linkOnlyMatch[1];
-      const linkUrl = linkOnlyMatch[2];
-      return (
-        <p>
-          <a href={linkUrl} target="_blank" rel="noopener noreferrer">
-            {linkText}
-          </a>
-        </p>
-      );
-    }
-
-    return <p>{description}</p>;
-  };
+  const [problemasEncontrados, setProblemasEncontrados] = useState([]);
 
   const handleAnalyze = async () => {
     if (!url) return;
     setLoading(true);
     setResult(null);
     setRecommendation('');
-    setReprovadas([]);
+    setProblemasEncontrados([]);
+
 
     try {
-      const response = await axios.post('https://backend-adacompany.onrender.com/lighthouse/accessibility', { url });
-      const notaAcessibilidade = response.data.accessibilityScore;
+      const response = await axios.post('http://localhost:3000/lighthouse/accessibility', { url });
+      const notaAcessibilidade = response.data.notaAcessibilidade;
 
       setResult(notaAcessibilidade);
+      setProblemasEncontrados(response.data.reprovadas || []);
 
       if (notaAcessibilidade < 50) {
-        setRecommendation('🔴 Nota baixa: Recomendamos o Pacote Básico de Acessibilidade para atingir uma nota média. Entre em contato com nossos especialistas e faça um orçamento');
+        setRecommendation('🔴 Nota baixa: Recomendamos o Pacote Básico de Acessibilidade para atingir uma nota média.');
       } else if (notaAcessibilidade < 80) {
-        setRecommendation('🟡 Nota média: Recomendamos o Pacote Intermediário para atingir um bom nível de acessibilidade. Entre em contato com nossos especialistas e faça um orçamento');
+        setRecommendation('🟡 Nota média: Recomendamos o Pacote Intermediário para atingir um bom nível de acessibilidade.');
       } else {
-        setRecommendation('🟢 Ótima nota! Seu site já atende bem aos padrões de acessibilidade. Caso queira melhorar ainda mais, contate o nosso Pacote Premium para garantir a melhor experiência para todos os usuários.');
+        setRecommendation('🟢 Ótima nota! Seu site já atende bem aos padrões de acessibilidade.');
       }
     } catch (error) {
       console.error(error);
@@ -69,6 +37,21 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const renderAuditItems = (items) => {
+    return items.length > 0 ? (
+      <ul>
+        {items.map((item) => (
+          <li key={item.id}>
+            <p className="problem-title">{item.title}</p>
+            <p className="problem-description">{item.description}</p>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p>Nenhum problema encontrado nesta categoria.</p>
+    );
   };
 
   return (
@@ -91,44 +74,37 @@ const Dashboard = () => {
         {loading ? 'Analisando...' : 'Analisar Acessibilidade'}
       </button>
 
-      {(result !== null || recommendation) && (
-        <div className="dashboard-content">
-          {result !== null && (
-            <div className="dashboard-result">
-              <h3>Resultado Lighthouse:</h3>
-              <p>Nota de Acessibilidade: <strong>{result}</strong> / 100</p>
-            </div>
-          )}
-
-          {recommendation && (
-            <div className="dashboard-recommendation">
-              <p>{recommendation}</p>
-            </div>
-          )}
-
-          {result !== null && (
-            <div className="dashboard-details">
-              {reprovadas.length > 0 && (
-                <div className="problemas-encontrados">
-                  <h4 className="problemas-encontrados-title">
-                    <span role="img" aria-label="Warning">⚠️</span> Problemas Encontrados ({reprovadas.length})
-                  </h4>
-                  <ul className="problemas-lista">
-                    {reprovadas.map((item) => (
-                      <li key={item.id} className="problema-item">
-                        <h5 className="problema-titulo">{item.title}</h5>
-                        <div className="problema-descricao">
-                          {renderDescription(item.description)}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
+      {recommendation && (
+        <div className="dashboard-recommendation">
+          <p>{recommendation}</p>
         </div>
       )}
+      {result !== null && (
+        <div className="lighthouse-result-container">
+          <div className="lighthouse-header">
+            <h3>Resultado Lighthouse:</h3>
+            <p>Nota de Acessibilidade: {result} / 100</p>
+          </div>
+          <div className="lighthouse-score-circle">
+            <span>{result}</span>
+          </div>
+          <p className="accessibility-text">Acessibilidade</p>
+          <p className="recommendation-text">
+            Essas verificações destacam oportunidades para melhorar a acessibilidade do seu app da Web. A detecção automática só cobre parte dos problemas, recomendamos entrar em contato com a nossa equipe para melhorias.
+          </p>
+
+          <div className="problemas-encontrados-container">
+            <h4 className="problemas-encontrados-title">
+              <span className="warning-icon">⚠️</span> Problemas Encontrados ({problemasEncontrados.length})
+            </h4>
+            {renderAuditItems(problemasEncontrados)}
+          </div>
+        </div>
+      )}
+
+
+      {/* NOVO BLOCO - Detalhamento das auditorias */}
+      
     </div>
   );
 };

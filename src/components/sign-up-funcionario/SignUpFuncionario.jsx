@@ -58,7 +58,7 @@ export default function SignUpFuncionario(props) {
     };
 
     try {
-      const response = await fetch('https://backend-adacompany.onrender.com/funcionarios', {
+      const response = await fetch('http://localhost:3000/funcionarios', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

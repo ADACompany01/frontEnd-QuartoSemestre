@@ -1,138 +1,96 @@
 import { useEffect, useState } from 'react';
-import Table from './Table';
-import { getUserId } from '../../utils';
+import './Portal.css'; // importe seu css aqui
 
 const Orcamentos = () => {
-  const [orcamentos, setOrcamentos] = useState([]);
+  const [contratos, setContratos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token = localStorage.getItem('token');
-  const userId = getUserId(); // Usa a função utilitária
 
-  // Função para deixar o status bonito
-  const formatarStatus = (status) => {
-    switch (status) {
-      case 'em_analise': return 'Em Análise';
-      case 'aprovado': return 'Aprovado';
-      case 'concluido': return 'Concluído';
-      case 'cancelado': return 'Cancelado';
-      case 'em_andamento': return 'Em Andamento';
-      default: return 'Pendente';
+  function getUserId() {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+    try {
+      const payloadBase64 = token.split('.')[1];
+      const payloadJson = atob(payloadBase64);
+      const payload = JSON.parse(payloadJson);
+      return payload.id_usuario || null;
+    } catch {
+      return null;
     }
-  };
+  }
+
+  const userId = getUserId();
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
-    const fetchOrcamentos = async () => {
+    const fetchContratos = async () => {
       try {
         setLoading(true);
         setError(null);
-        
-        console.log('=== DEBUG ORÇAMENTOS ===');
-        console.log('User ID:', userId);
-        console.log('Token:', token ? 'Presente' : 'Ausente');
-        console.log('Token completo:', token);
-        
-        if (!userId) {
-          throw new Error('User ID não encontrado no token');
-        }
-        
-        if (!token) {
-          throw new Error('Token não encontrado no localStorage');
-        }
 
-        console.log('Fazendo requisição para:', 'https://backend-adacompany.onrender.com/orcamentos');
+        if (!token) throw new Error('Token não encontrado');
+        if (!userId) throw new Error('User ID não encontrado');
 
-        const response = await fetch('https://backend-adacompany.onrender.com/orcamentos', {
-          method: 'GET',
+        const response = await fetch('http://localhost:3000/contratos', {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
-        console.log('Status da resposta:', response.status);
-        console.log('Headers da resposta:', response.headers);
+        if (!response.ok) throw new Error(`Erro ao buscar contratos: ${response.status}`);
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.log('Erro da resposta:', errorText);
-          throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
-        }
+        const contratosData = await response.json();
 
-        const data = await response.json();
-        console.log('Dados recebidos:', data);
-        console.log('Todos os orçamentos recebidos:', data.data);
+        console.log('Contratos recebidos:', contratosData);
 
-        // Filtra os orçamentos do usuário logado
-        const orcamentosDoUsuario = data.data ? data.data.filter(o => {
-          console.log('Verificando orçamento:', o);
-          console.log('ID do cliente no orçamento:', o.id_cliente);
-          console.log('ID do cliente no pacote:', o.pacote?.id_cliente);
-          console.log('User ID atual:', userId);
-          console.log('Comparação direta:', o.id_cliente === userId);
-          console.log('Comparação no pacote:', o.pacote?.id_cliente === userId);
-          
-          // Verifica tanto no orçamento quanto no pacote
-          return o.id_cliente === userId || o.pacote?.id_cliente === userId;
-        }) : [];
-        console.log('Orçamentos filtrados:', orcamentosDoUsuario);
-        console.log('Total de orçamentos encontrados:', orcamentosDoUsuario.length);
-        
-        // Temporariamente, vamos mostrar todos os orçamentos para debug
-        console.log('=== DEBUG: Mostrando todos os orçamentos ===');
-        if (data.data && data.data.length > 0) {
-          console.log('Orçamentos disponíveis:');
-          data.data.forEach((orc, index) => {
-            console.log(`Orçamento ${index + 1}:`, {
-              cod_orcamento: orc.cod_orcamento,
-              id_cliente_orcamento: orc.id_cliente,
-              id_cliente_pacote: orc.pacote?.id_cliente,
-              valor: orc.valor_orcamento,
-              data: orc.data_orcamento
-            });
-          });
-        }
-        
-        // TEMPORÁRIO: Mostrar todos os orçamentos para debug
-        setOrcamentos(data.data || []);
-        // setOrcamentos(orcamentosDoUsuario);
+        // Filtra só os contratos do cliente logado
+        const contratosDoUsuario = contratosData.filter(
+          (contrato) => contrato.orcamento?.pacote?.cliente?.id_usuario === userId
+        );
+
+        console.log('Contratos do usuário:', contratosDoUsuario);
+
+        setContratos(contratosDoUsuario);
       } catch (err) {
-        console.error('Erro ao buscar orçamentos:', err);
+        console.error('Erro ao carregar contratos:', err);
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchOrcamentos();
+    fetchContratos();
   }, [userId, token]);
 
-  // Transforma os dados no formato que o <Table> espera
-  const rows = orcamentos.map(o => [
-    o.pacote?.nome || '—',
-    new Date(o.data_orcamento).toLocaleDateString(),
-    `R$ ${Number(o.valor_orcamento).toFixed(2)}`,
-    formatarStatus(o.status),
-  ]);
-
-  if (loading) {
-    return <div>Carregando orçamentos...</div>;
-  }
-
-  if (error) {
-    return <div>Erro ao carregar orçamentos: {error}</div>;
-  }
+  if (loading) return <div className="dashboard-result">Carregando contratos...</div>;
+  if (error) return <div className="dashboard-result" style={{ color: 'red' }}>Erro ao carregar contratos: {error}</div>;
+  if (contratos.length === 0) return <div className="dashboard-result">Você ainda não possui contratos cadastrados.</div>;
 
   return (
-    <div>
-      <div className="portal-header-row">
-        <h2>Orçamentos</h2>
-        <button className="portal-button">Solicitar Orçamento</button>
-      </div>
-      <Table
-        headers={['Nome', 'Data', 'Valor', 'Status']}
-        rows={rows}
-      />
+    <div className="dashboard-content">
+      <h2 className="dashboard-title">Seus Contratos</h2>
+      <table className="portal-table">
+        <thead>
+          <tr>
+            <th>Código Orçamento</th>
+            <th>Valor Contrato</th>
+            <th>Status</th>
+            <th>Data Início</th>
+            <th>Data Entrega</th>
+          </tr>
+        </thead>
+        <tbody>
+          {contratos.map((c) => (
+            <tr key={c.id_contrato}>
+              <td>{c.cod_orcamento}</td>
+              <td>R$ {Number(c.valor_contrato).toFixed(2)}</td>
+              <td style={{ textTransform: 'capitalize' }}>{c.status_contrato.toLowerCase()}</td>
+              <td>{c.data_inicio ? new Date(c.data_inicio).toLocaleDateString() : '—'}</td>
+              <td>{c.data_entrega ? new Date(c.data_entrega).toLocaleDateString() : '—'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

@@ -18,10 +18,10 @@ const AdminPainel = () => {
         
         // Tentar diferentes endpoints possíveis
         const endpoints = [
-          "https://backend-adacompany.onrender.com/contratos",
-          "https://backend-adacompany.onrender.com/contrato",
-          "https://backend-adacompany.onrender.com/api/contratos",
-          "https://backend-adacompany.onrender.com/api/contrato"
+          "http://localhost:3000/contratos",
+          "http://localhost:3000/contrato",
+          "http://localhost:3000/api/contratos",
+          "http://localhost:3000/api/contrato"
         ];
         
         let data = null;
@@ -83,8 +83,8 @@ const AdminPainel = () => {
     try {
       console.log('Atualizando contrato:', id, 'para status:', status);
       
-      const response = await fetch(`https://backend-adacompany.onrender.com/contratos/${id}`, {
-        method: "PUT",
+      const response = await fetch(`http://localhost:3000/contratos/${id}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,

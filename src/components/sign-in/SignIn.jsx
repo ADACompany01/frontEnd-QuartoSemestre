@@ -8,7 +8,7 @@ export default function SignIn() {
   const [email, setEmail] = React.useState('');
   const [senha, setSenha] = React.useState('');
   const [erro, setErro] = React.useState('');
-  const apiUrl = 'https://backend-adacompany.onrender.com';
+  const apiUrl = 'http://localhost:3000';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
