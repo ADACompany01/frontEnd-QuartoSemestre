@@ -37,8 +37,18 @@ export const Navbar = () => {
     const decodedToken = jwtDecode(token);
     const userRole = decodedToken?.role; // Handle potential null value
     if (userRole === "cliente") {
-      navigate("/client");
-    } else if (userRole === "admin") {
+      navigate("/portalcliente");
+    } else if (userRole === "funcionario") {
+      navigate("/admin");
+    }
+  };
+
+  const handlePainel = () => {
+    const decodedToken = jwtDecode(token);
+    const userRole = decodedToken?.role; // Handle potential null value
+    if (userRole === "cliente") {
+      navigate("/portalcliente");
+    } else if (userRole === "funcionario") {
       navigate("/admin");
     }
   };
@@ -86,6 +96,9 @@ export const Navbar = () => {
           </li>
           {token ? (
             <>
+              <li>
+                <a onClick={handlePainel}>Painel</a>
+              </li>
               <li>
                 <a onClick={handleLogout}>Logout</a>
               </li>
