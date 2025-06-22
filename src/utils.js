@@ -26,7 +26,7 @@ export function getUserIdFromToken(token) {
   if (!decoded) return null;
   
   // Tenta diferentes possíveis campos para o ID do usuário
-  return decoded.id || decoded.sub || decoded.userId || decoded.user_id;
+  return decoded.id || decoded.sub || decoded.userId || decoded.user_id || decoded.id_usuario;
 }
 
 // Função para obter userId do localStorage
