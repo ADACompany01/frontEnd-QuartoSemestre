@@ -3,55 +3,21 @@ import './SignUpClient.css';
 
 export default function SignUpClient() {
   const [formData, setFormData] = useState({
-    id: '',
-    nomeCliente: '',
-    telefone: '',
-    cep: '',
-    logradouro: '',
-    complemento: '',
-    bairro: '',
-    localidade: '',
-    uf: '',
-    estado: '',
-    ddd: '',
+    nome_completo: '',
     cnpj: '',
     email: '',
+    telefone: '',
     senha: '',
-    telefoneUsuario: '',
-    nomeCompleto: '',
   });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const buscarEndereco = async () => {
-    if (!formData.cep) return;
-    try {
-      const response = await fetch(`https://viacep.com.br/ws/${formData.cep}/json/`);
-      const data = await response.json();
-      if (data.erro) {
-        alert('CEP não encontrado');
-        return;
-      }
-      setFormData({
-        ...formData,
-        logradouro: data.logradouro || '',
-        bairro: data.bairro || '',
-        localidade: data.localidade || '',
-        uf: data.uf || '',
-        estado: data.uf || '',
-        ddd: data.ddd || '',
-      });
-    } catch (error) {
-      console.error('Erro ao buscar o CEP', error);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://backend-adacompany.onrender.com/clientes/cadastro', {
+      const response = await fetch('https://backend-adacompany.onrender.com/clientes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -59,13 +25,45 @@ export default function SignUpClient() {
 
       if (response.ok) {
         alert('Cliente cadastrado com sucesso!');
-        setFormData({});
+        setFormData({
+          nome_completo: '',
+          cnpj: '',
+          email: '',
+          telefone: '',
+          senha: '',
+        });
       } else {
         alert('Erro ao cadastrar cliente.');
       }
     } catch (error) {
       console.error('Erro no cadastro:', error);
     }
+  };
+
+  const getFieldLabel = (fieldName) => {
+    const labels = {
+      nome_completo: 'Nome Completo',
+      cnpj: 'CNPJ',
+      email: 'Email',
+      telefone: 'Telefone',
+      senha: 'Senha'
+    };
+    return labels[fieldName] || fieldName;
+  };
+
+  const getFieldType = (fieldName) => {
+    return fieldName === 'senha' ? 'password' : 'text';
+  };
+
+  const getFieldPlaceholder = (fieldName) => {
+    const placeholders = {
+      nome_completo: 'Digite seu nome completo',
+      cnpj: '00.000.000/0000-00',
+      email: 'seu@email.com',
+      telefone: '(00) 00000-0000',
+      senha: 'Digite sua senha'
+    };
+    return placeholders[fieldName] || `Digite ${fieldName}`;
   };
 
   return (
@@ -75,14 +73,14 @@ export default function SignUpClient() {
         <form onSubmit={handleSubmit} className="signup-form">
           {Object.keys(formData).map((field) => (
             <div className="form-group" key={field}>
-              <label>{field}</label>
+              <label>{getFieldLabel(field)}</label>
               <input
-                type={field === 'senha' ? 'password' : 'text'}
+                type={getFieldType(field)}
                 name={field}
                 value={formData[field] || ''}
                 onChange={handleChange}
-                onBlur={field === 'cep' ? buscarEndereco : undefined}
-                placeholder={`Digite ${field}`}
+                placeholder={getFieldPlaceholder(field)}
+                required
               />
             </div>
           ))}
