@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import Table from './Table';
+import { getUserId } from '../../utils';
 
 const Orcamentos = () => {
   const [orcamentos, setOrcamentos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const userId = localStorage.getItem('userId');
   const token = localStorage.getItem('token');
+  const userId = getUserId(); // Usa a função utilitária
 
   // Função para deixar o status bonito
   const formatarStatus = (status) => {
@@ -32,7 +33,7 @@ const Orcamentos = () => {
         console.log('Token completo:', token);
         
         if (!userId) {
-          throw new Error('User ID não encontrado no localStorage');
+          throw new Error('User ID não encontrado no token');
         }
         
         if (!token) {
