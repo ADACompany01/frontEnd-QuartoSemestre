@@ -121,7 +121,7 @@ const scriptUserWay = document.createElement('script');
           </Route>
           <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
-          <Route path="/gerenciar-pedidos" element={<AdminPainel />} />
+          <Route path="gerenciar-pedidos" element={<AdminPainel />} />
         </Route>
         </Routes>
         <Contact />
