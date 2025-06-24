@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="frontEnd-QuartoSemestre/assets/hero/AdaHome.png" alt="ADA Company Banner" width="600"/>
+  <img src="assets/hero/AdaHome.png" alt="ADA Company Banner" width="600"/>
 </p>
 
 <h1 align="center">ADA Company - Projeto Final</h1>
@@ -19,24 +19,16 @@ Sistema completo para gestão de serviços, clientes e funcionários, com interf
 
 ## 🖼️ Demonstração Visual
 
-<<<<<<< HEAD
-- Nome 1 - Luiz Riato
-- Nome 2 - Matheus Prusch
-- Nome 3 - Maycon Sanches
-- Nome 4 - Pietro Adrian
-- Nome 5 - Samuel Pregnolatto
-=======
 <p align="center">
-  <img src="../frontEnd-QuartoSemestre/assets/hero/heroImage.png" alt="Tela Inicial" width="400"/>
-  <img src="../frontEnd-QuartoSemestre/assets/about/aboutImage.png" alt="Sobre o Projeto" width="400"/>
+  <img src="assets/hero/heroImage.png" alt="Tela Inicial" width="400"/>
+  <img src="assets/about/aboutImage.png" alt="Sobre o Projeto" width="400"/>
 </p>
 
 <p align="center">
-  <img src="../frontEnd-QuartoSemestre/assets/cards/site-idosos.jpg" alt="Card Idosos" width="250"/>
-  <img src="../frontEnd-QuartoSemestre/assets/cards/site-infantil.jpg" alt="Card Infantil" width="250"/>
-  <img src="../frontEnd-QuartoSemestre/assets/cards/site-acessibilidade.jpg" alt="Card Acessibilidade" width="250"/>
+  <img src="assets/cards/site-idosos.jpg" alt="Card Idosos" width="250"/>
+  <img src="assets/cards/site-infantil.jpg" alt="Card Infantil" width="250"/>
+  <img src="assets/cards/site-acessibilidade.jpg" alt="Card Acessibilidade" width="250"/>
 </p>
->>>>>>> 9d553049 (docs(readme): Personaliza README principal com imagens e integrantes;)
 
 ---
 
@@ -87,8 +79,6 @@ Sistema completo para gestão de serviços, clientes e funcionários, com interf
 - Samuel Pregnolatto
 
 ---
-<<<<<<< HEAD
-=======
 
 ## 📄 Documentação e Repositórios
 
@@ -99,15 +89,14 @@ Sistema completo para gestão de serviços, clientes e funcionários, com interf
 
 ## 📸 Mais Imagens
 
-- ![Banner](../frontEnd-QuartoSemestre/assets/hero/AdaHome.png)
-- ![Sobre](../frontEnd-QuartoSemestre/assets/about/aboutImage.png)
-- ![Card Idosos](../frontEnd-QuartoSemestre/assets/cards/site-idosos.jpg)
-- ![Card Infantil](../frontEnd-QuartoSemestre/assets/cards/site-infantil.jpg)
-- ![Card Acessibilidade](../frontEnd-QuartoSemestre/assets/cards/site-acessibilidade.jpg)
+- ![Banner](assets/hero/AdaHome.png)
+- ![Sobre](assets/about/aboutImage.png)
+- ![Card Idosos](assets/cards/site-idosos.jpg)
+- ![Card Infantil](assets/cards/site-infantil.jpg)
+- ![Card Acessibilidade](assets/cards/site-acessibilidade.jpg)
 
 ---
 
 ## 📄 Licença
 
 Este projeto está sob a licença MIT. 
->>>>>>> 9d553049 (docs(readme): Personaliza README principal com imagens e integrantes;)
