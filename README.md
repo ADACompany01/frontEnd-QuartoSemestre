@@ -1,91 +1,113 @@
-# ADA Company - Frontend
+<p align="center">
+  <img src="../frontEnd-QuartoSemestre/assets/hero/AdaHome.png" alt="ADA Company Banner" width="600"/>
+</p>
 
-Este repositório contém o frontend do projeto ADA Company, desenvolvido em React + Vite.
+<h1 align="center">ADA Company - Projeto Final</h1>
 
-## Sumário
-- [Sobre o Projeto](#sobre-o-projeto)
-- [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Como Rodar Localmente](#como-rodar-localmente)
-- [Docker](#docker)
-- [Integração com o Backend](#integração-com-o-backend)
-- [Deploy](#deploy)
-- [Links Úteis](#links-úteis)
+<p align="center">
+  <a href="https://newadacompany-3drnxk22f-ada-companys-projects.vercel.app/"><img src="https://img.shields.io/badge/Frontend-Online-green" /></a>
+  <a href="https://backend-adacompany.onrender.com/"><img src="https://img.shields.io/badge/Backend-Online-blue" /></a>
+</p>
 
 ---
 
-## Sobre o Projeto
+## ✨ Sobre o Projeto
 
-Interface web para interação com a API do ADA Company, permitindo acesso às funcionalidades do sistema de forma intuitiva e responsiva.
-
----
-
-## Tecnologias Utilizadas
-- React
-- Vite
-- JavaScript/TypeScript
-- CSS
-- Nginx (para produção via Docker)
+Sistema completo para gestão de serviços, clientes e funcionários, com interface web moderna e API robusta.
 
 ---
 
-## Como Rodar Localmente
+## 🖼️ Demonstração Visual
 
-1. **Clone o repositório:**
+<<<<<<< HEAD
+- Nome 1 - Luiz Riato
+- Nome 2 - Matheus Prusch
+- Nome 3 - Maycon Sanches
+- Nome 4 - Pietro Adrian
+- Nome 5 - Samuel Pregnolatto
+=======
+<p align="center">
+  <img src="../frontEnd-QuartoSemestre/assets/hero/heroImage.png" alt="Tela Inicial" width="400"/>
+  <img src="../frontEnd-QuartoSemestre/assets/about/aboutImage.png" alt="Sobre o Projeto" width="400"/>
+</p>
+
+<p align="center">
+  <img src="../frontEnd-QuartoSemestre/assets/cards/site-idosos.jpg" alt="Card Idosos" width="250"/>
+  <img src="../frontEnd-QuartoSemestre/assets/cards/site-infantil.jpg" alt="Card Infantil" width="250"/>
+  <img src="../frontEnd-QuartoSemestre/assets/cards/site-acessibilidade.jpg" alt="Card Acessibilidade" width="250"/>
+</p>
+>>>>>>> 9d553049 (docs(readme): Personaliza README principal com imagens e integrantes;)
+
+---
+
+## 🚀 Tecnologias Utilizadas
+
+- React + Vite (Frontend)
+- NestJS (Backend)
+- PostgreSQL (Banco de Dados)
+- Docker & Docker Compose
+- Nginx (Frontend em produção)
+
+---
+
+## 📦 Como Executar
+
+1. **Clone os repositórios:**
    ```sh
+   git clone https://github.com/ADACompany01/backEnd-QuartoSemestre.git
    git clone https://github.com/ADACompany01/frontEnd-QuartoSemestre.git
-   cd frontEnd-QuartoSemestre
    ```
-2. **Instale as dependências:**
+2. **Navegue até a pasta do docker-compose:**
    ```sh
-   npm install
+   cd backEnd-QuartoSemestre/API_NEST/API_ADA_COMPANY_NESTJS
    ```
-3. **Configure a URL do backend:**
-   - Edite o arquivo `.env` ou configure a variável `REACT_APP_BACKEND_URL` conforme necessário.
-4. **Inicie o servidor de desenvolvimento:**
+3. **Suba os containers:**
    ```sh
-   npm run dev
+   docker-compose up -d --build
    ```
-5. Acesse em: [http://localhost:5173](http://localhost:5173)
+4. **Acesse:**
+   - Frontend: [http://localhost](http://localhost)
+   - Backend: [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## Docker
+## 🌐 Links das Aplicações Publicadas
 
-Para rodar o frontend em um container Docker:
-
-1. **Build da imagem:**
-   ```sh
-   docker build -t ada-company-frontend .
-   ```
-2. **Execute o container:**
-   ```sh
-   docker run -d -p 80:80 \
-     -e REACT_APP_BACKEND_URL=http://localhost:3000 \
-     --name ada-frontend ada-company-frontend
-   ```
-   > Ajuste a variável de ambiente `REACT_APP_BACKEND_URL` conforme o endereço do backend.
+- **Frontend:** [https://newadacompany-3drnxk22f-ada-companys-projects.vercel.app/](https://newadacompany-3drnxk22f-ada-companys-projects.vercel.app/)
+- **Backend:** [https://backend-adacompany.onrender.com/](https://backend-adacompany.onrender.com/)
 
 ---
 
-## Integração com o Backend
+## 👥 Integrantes
 
-- O frontend consome a API do backend disponível em: `http://localhost:3000` (ou conforme configurado).
-- Certifique-se de que o backend esteja rodando antes de acessar o frontend.
+- Luiz Riato
+- Matheus Prusch
+- Maycon Sanches
+- Pietro Adrian
+- Samuel Pregnolatto
+
+---
+<<<<<<< HEAD
+=======
+
+## 📄 Documentação e Repositórios
+
+- [Repositório Backend](https://github.com/ADACompany01/backEnd-QuartoSemestre)
+- [Repositório Frontend](https://github.com/ADACompany01/frontEnd-QuartoSemestre)
 
 ---
 
-## Deploy
+## 📸 Mais Imagens
 
-A aplicação está publicada em:
-- [front-end-quarto-semestre.vercel.app](https://front-end-quarto-semestre.vercel.app)
-
----
-
-## Links Úteis
-- **Repositório do Backend:** [ADACompany01/backEnd-QuartoSemestre](https://github.com/ADACompany01/backEnd-QuartoSemestre.git)
-- **Documentação Geral:** Consulte o README do backend para detalhes completos do projeto.
+- ![Banner](../frontEnd-QuartoSemestre/assets/hero/AdaHome.png)
+- ![Sobre](../frontEnd-QuartoSemestre/assets/about/aboutImage.png)
+- ![Card Idosos](../frontEnd-QuartoSemestre/assets/cards/site-idosos.jpg)
+- ![Card Infantil](../frontEnd-QuartoSemestre/assets/cards/site-infantil.jpg)
+- ![Card Acessibilidade](../frontEnd-QuartoSemestre/assets/cards/site-acessibilidade.jpg)
 
 ---
 
-## Contato
-Dúvidas ou sugestões? Abra uma issue ou entre em contato com os integrantes do projeto.
+## 📄 Licença
+
+Este projeto está sob a licença MIT. 
+>>>>>>> 9d553049 (docs(readme): Personaliza README principal com imagens e integrantes;)
