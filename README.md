@@ -19,14 +19,15 @@
 4. [Tecnologias Utilizadas](#tecnologias-utilizadas)
 5. [Organização dos Repositórios](#organização-dos-repositórios)
 6. [Como Executar](#como-executar)
-7. [Documentação Docker](#documentação-docker)
-8. [Estrutura do Banco de Dados](#estrutura-do-banco-de-dados)
-9. [Documentação da API](#documentação-da-api)
-10. [Exemplos de Integração](#exemplos-de-integração)
-11. [Links das Aplicações Publicadas](#links-das-aplicações-publicadas)
-12. [Integrantes](#integrantes)
-13. [Licença](#licença)
-14. [Referências e Suporte](#referências-e-suporte)
+7. [Integração e Entrega Contínua (CI/CD)](#integração-e-entrega-contínua-cicd)
+8. [Documentação Docker](#documentação-docker)
+9. [Estrutura do Banco de Dados](#estrutura-do-banco-de-dados)
+10. [Documentação da API](#documentação-da-api)
+11. [Exemplos de Integração](#exemplos-de-integração)
+12. [Links das Aplicações Publicadas](#links-das-aplicações-publicadas)
+13. [Integrantes](#integrantes)
+14. [Licença](#licença)
+15. [Referências e Suporte](#referências-e-suporte)
 
 ---
 
@@ -136,6 +137,30 @@ Projetos/
 4. **Acesse:**
    - Frontend: [http://localhost](http://localhost)
    - Backend: [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 🚦 Integração e Entrega Contínua (CI/CD)
+
+O projeto utiliza um pipeline automatizado com GitHub Actions para o frontend, localizado em `.github/workflows/ci-frontend.yml`.
+
+**Principais etapas automatizadas:**
+- Instalação de dependências do frontend
+- Execução de testes automatizados (placeholder, pode ser expandido)
+- Build do código frontend
+- Versionamento semântico automático e criação de tags
+- Build e push de imagens Docker do frontend para o Docker Hub
+- Deploy automático do frontend na Vercel
+- Notificações por e-mail em caso de falha
+- Uso de secrets para credenciais sensíveis
+- Cache de build para acelerar execuções
+
+**Resumo do fluxo:**
+1. Build, teste, versionamento e publicação da imagem Docker do frontend.
+2. Deploy automático do frontend na Vercel ao criar uma nova versão.
+3. Notificações automáticas por e-mail em caso de falha em qualquer etapa.
+
+Para mais detalhes, consulte o arquivo de workflow `.github/workflows/ci-frontend.yml` no repositório.
 
 ---
 
