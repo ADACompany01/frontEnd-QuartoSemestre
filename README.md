@@ -391,4 +391,3 @@ Para dúvidas ou problemas:
 - Abra uma issue no repositório correspondente
 - Entre em contato com a equipe de desenvolvimento
 - Consulte a documentação da API em `/docs` (Swagger) 
-- Consulte a documentação da API em `/docs` (Swagger) 
