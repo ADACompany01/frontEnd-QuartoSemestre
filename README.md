@@ -14,24 +14,59 @@
 ## 🗂️ Sumário
 
 1. [Sobre o Projeto](#sobre-o-projeto)
-2. [Demonstração Visual](#demonstração-visual)
-3. [Tecnologias Utilizadas](#tecnologias-utilizadas)
-4. [Organização dos Repositórios](#organização-dos-repositórios)
-5. [Como Executar](#como-executar)
-6. [Documentação Docker](#documentação-docker)
-7. [Estrutura do Banco de Dados](#estrutura-do-banco-de-dados)
-8. [Documentação da API](#documentação-da-api)
-9. [Exemplos de Integração](#exemplos-de-integração)
-10. [Links das Aplicações Publicadas](#links-das-aplicações-publicadas)
-11. [Integrantes](#integrantes)
-12. [Licença](#licença)
-13. [Referências e Suporte](#referências-e-suporte)
+2. [Requisitos Funcionais](#requisitos-funcionais)
+3. [Demonstração Visual](#demonstração-visual)
+4. [Tecnologias Utilizadas](#tecnologias-utilizadas)
+5. [Organização dos Repositórios](#organização-dos-repositórios)
+6. [Como Executar](#como-executar)
+7. [Documentação Docker](#documentação-docker)
+8. [Estrutura do Banco de Dados](#estrutura-do-banco-de-dados)
+9. [Documentação da API](#documentação-da-api)
+10. [Exemplos de Integração](#exemplos-de-integração)
+11. [Links das Aplicações Publicadas](#links-das-aplicações-publicadas)
+12. [Integrantes](#integrantes)
+13. [Licença](#licença)
+14. [Referências e Suporte](#referências-e-suporte)
 
 ---
 
 ## ✨ Sobre o Projeto
 
 Sistema completo para gestão de serviços, clientes e funcionários, com interface web moderna e API robusta. O sistema foi desenvolvido como projeto final do quarto semestre, utilizando arquitetura em camadas, containers Docker e API RESTful documentada.
+
+---
+
+## ✅ Requisitos Funcionais
+
+- **Cadastro de Usuários:**
+  O sistema deve permitir o cadastro de diferentes tipos de usuários (clientes, funcionários).
+
+- **Autenticação e Autorização:**
+  O sistema deve permitir login seguro e garantir que apenas usuários autenticados acessem funcionalidades restritas.
+
+- **Gestão de Serviços:**
+  O sistema deve permitir o cadastro, edição, exclusão e listagem de serviços oferecidos pela empresa.
+
+- **Gestão de Clientes:**
+  O sistema deve permitir o cadastro, edição, exclusão e listagem de clientes.
+
+- **Gestão de Funcionários:**
+  O sistema deve permitir o cadastro, edição, exclusão e listagem de funcionários.
+
+- **Orçamento:**
+  O sistema deve permitir que clientes solicitem orçamentos e acompanhem o status.
+
+- **Dashboard:**
+  O sistema deve apresentar um painel com informações resumidas (quantidade de clientes, serviços, orçamentos, etc).
+
+- **Integração Frontend/Backend:**
+  O frontend deve consumir a API do backend para todas as operações de CRUD.
+
+- **Notificações:**
+  O cliente deve acompanhar o status de pedidos através da página de acesso no frontend.
+
+- **Avaliação de url via API:**
+  O cliente deve conseguir avaliar o nível de acessibilidade do seu site informando a url dele.
 
 ---
 
