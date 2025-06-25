@@ -418,7 +418,7 @@ Content-Type: application/json
 
 ## 🌐 Links das Aplicações Publicadas
 
-- **Frontend:** [https://newadacompany-3drnxk22f-ada-companys-projects.vercel.app/](https://newadacompany-3drnxk22f-ada-companys-projects.vercel.app/)
+- **Frontend:** [https://newadacompany.vercel.app/](https://newadacompany.vercel.app/)
 - **Backend:** [https://backend-adacompany.onrender.com/](https://backend-adacompany.onrender.com/)
 
 ---
