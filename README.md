@@ -419,7 +419,7 @@ Content-Type: application/json
 ## 🌐 Links das Aplicações Publicadas
 
 - **Frontend:** [https://newadacompany.vercel.app/](https://newadacompany.vercel.app/)
-- **Backend:** [https://backend-adacompany.onrender.com/](https://backend-adacompany.onrender.com/)
+- **Backend:** [https://backend-adacompany.onrender.com/api](https://backend-adacompany.onrender.com/api)
 
 ---
 
