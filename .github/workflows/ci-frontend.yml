@@ -182,6 +182,8 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: '--prod'
 
+      - name: Forçar falha para teste de e-mail (REMOVER DEPOIS)
+        run: exit 1
       - name: Enviar E-mail de Notificação de Falha
         if: failure()
         uses: dawidd6/action-send-mail@v3
@@ -204,6 +206,3 @@ jobs:
             Por favor, verifique os logs para mais informações.
           to: ${{ secrets.MAIL_TO }}
           from: 'GitHub Actions <${{ secrets.MAIL_USERNAME }}>'
-
-      - name: Forçar falha para teste de e-mail (REMOVER DEPOIS)
-        run: exit 1
