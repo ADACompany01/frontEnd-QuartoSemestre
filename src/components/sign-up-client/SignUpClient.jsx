@@ -11,6 +11,11 @@ export default function SignUpClient() {
     senha: '',
   });
   const navigate = useNavigate();
+  
+  let apiUrl = 'https://backend-adacompany.onrender.com';
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    apiUrl = 'http://localhost:3000';
+  }
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,7 +24,7 @@ export default function SignUpClient() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3000/clientes/cadastro', {
+      const response = await fetch(`${apiUrl}/clientes/cadastro`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
