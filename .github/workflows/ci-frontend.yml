@@ -204,3 +204,6 @@ jobs:
             Por favor, verifique os logs para mais informações.
           to: ${{ secrets.MAIL_TO }}
           from: 'GitHub Actions <${{ secrets.MAIL_USERNAME }}>'
+
+      - name: Forçar falha para teste de e-mail (REMOVER DEPOIS)
+        run: exit 1
