@@ -121,6 +121,8 @@ Projetos/
 
 ## 📦 Como Executar
 
+Para rodar o sistema completo localmente (frontend, backend e banco de dados), basta usar o docker-compose já configurado no backend:
+
 1. **Clone os repositórios:**
    ```sh
    git clone https://github.com/ADACompany01/backEnd-QuartoSemestre.git
@@ -130,13 +132,17 @@ Projetos/
    ```sh
    cd backEnd-QuartoSemestre/API_NEST/API_ADA_COMPANY_NESTJS
    ```
-3. **Suba os containers:**
+3. **Suba todos os containers:**
    ```sh
-   docker-compose up -d --build
+   docker-compose up --build
    ```
-4. **Acesse:**
-   - Frontend: [http://localhost](http://localhost)
-   - Backend: [http://localhost:3000](http://localhost:3000)
+
+- O frontend estará disponível em: [http://localhost](http://localhost)
+- O backend (Swagger) estará em: [http://localhost:3000/api](http://localhost:3000/api)
+
+> **Observação:**
+> - Não é necessário criar arquivos `.env` para rodar via Docker, pois todas as variáveis já estão no `docker-compose.yml`.
+> - O compose já está ajustado para não depender de healthcheck nem de depends_on no frontend, facilitando o uso local.
 
 ---
 
@@ -165,6 +171,8 @@ Para mais detalhes, consulte o arquivo de workflow `.github/workflows/ci-fronten
 ---
 
 ## 🐳 Documentação Docker
+
+O arquivo `docker-compose.yml` já está pronto para uso local, sem healthcheck e sem depends_on no frontend. Basta seguir o passo a passo acima para rodar tudo localmente.
 
 ### Docker Compose
 
