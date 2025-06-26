@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './SignUpClient.css';
 
 export default function SignUpClient() {
@@ -9,6 +10,7 @@ export default function SignUpClient() {
     telefone: '',
     senha: '',
   });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -32,6 +34,7 @@ export default function SignUpClient() {
           telefone: '',
           senha: '',
         });
+        navigate('/signin');
       } else {
         alert('Erro ao cadastrar cliente.');
       }

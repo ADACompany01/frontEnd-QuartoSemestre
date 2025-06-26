@@ -9,6 +9,10 @@ const Dashboard = () => {
   const [recommendation, setRecommendation] = useState('');
   const [problemasEncontrados, setProblemasEncontrados] = useState([]);
 
+  const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3000'
+    : 'https://backend-adacompany.onrender.com';
+
   const handleAnalyze = async () => {
     if (!url) return;
     setLoading(true);
@@ -18,7 +22,7 @@ const Dashboard = () => {
 
 
     try {
-      const response = await axios.post('http://localhost:3000/lighthouse/accessibility', { url });
+      const response = await axios.post(`${apiUrl}/lighthouse/accessibility`, { url });
       const notaAcessibilidade = response.data.notaAcessibilidade;
 
       setResult(notaAcessibilidade);
