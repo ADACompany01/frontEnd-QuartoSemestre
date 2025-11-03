@@ -169,18 +169,53 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
+      - name: Buildar e Publicar Imagem Docker do Frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/ada-company-frontend:latest
+            ${{ secrets.DOCKER_USERNAME }}/ada-company-frontend:${{ github.ref_name }}
+            ${{ secrets.DOCKER_USERNAME }}/ada-company-frontend:${{ steps.versioning.outputs.new_version }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max    
+
       - name: Mover Cache de Buildx
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-      - name: Deploy na Vercel
-        uses: amondnet/vercel-action@v25
+      # - name: Deploy na Vercel
+      #   uses: amondnet/vercel-action@v25
+      #   with:
+      #     vercel-token: ${{ secrets.VERCEL_TOKEN }}
+      #     vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+      #     vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+      #     vercel-args: '--prod'
+
+      - name: Deploy do Frontend na EC2
+        if: success() # Só executa se os passos anteriores funcionarem
+        uses: appleboy/ssh-action@master
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            # Puxa a nova imagem do Frontend
+            docker pull ${{ secrets.DOCKER_USERNAME }}/ada-company-frontend:latest
+            
+            # Para e remove o container antigo (se existir)
+            docker stop web-frontend || true
+            docker rm web-frontend || true
+            
+            # Inicia o novo container
+            # Mapeia a porta 80 interna do container para a porta 8080 da EC2
+            docker run -d \
+              -p 8080:80 \
+              --name web-frontend \
+              --restart always \
+              ${{ secrets.DOCKER_USERNAME }}/ada-company-frontend:latest
 
       - name: Enviar E-mail de Notificação de Falha
         if: failure()
