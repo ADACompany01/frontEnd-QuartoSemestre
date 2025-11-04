@@ -8,9 +8,18 @@ export default function SignIn() {
   const [email, setEmail] = React.useState('');
   const [senha, setSenha] = React.useState('');
   const [erro, setErro] = React.useState('');
-  let apiUrl = 'https://backend-adacompany.onrender.com';
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+  // let apiUrl = 'https://backend-adacompany.onrender.com';
+if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    // 1. Ambiente de Desenvolvimento Local
+    // (Frontend em localhost:xxxx falando com Backend em localhost:3000)
     apiUrl = 'http://localhost:3000';
+  } else {
+    // 2. AMBIENTE DE PRODUÇÃO (EC2)
+    // (Frontend em http://[hostname]:8080 falando com Backend em http://[hostname]:3000)
+    //
+    // Pega o protocolo (http:) e o hostname (adacompany.duckdns.org)
+    // e apenas anexa a porta do backend (:3000)
+    apiUrl = `${window.location.protocol}//${hostname}:3000`;
   }
 
   const handleSubmit = async (e) => {
