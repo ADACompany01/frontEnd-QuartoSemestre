@@ -12,7 +12,7 @@ export default function SignUpClient() {
   });
   const navigate = useNavigate();
   
-  let apiUrl = 'https://adacompany.duckdns.org';
+ let apiUrl = 'http://adacompany.duckdns.org:3000';
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     apiUrl = 'http://localhost:3000';
   }
