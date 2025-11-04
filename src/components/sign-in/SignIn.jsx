@@ -14,14 +14,14 @@ export default function SignIn() {
 if (hostname === 'localhost' || hostname === '127.0.0.1') {
     // 1. Ambiente de Desenvolvimento Local
     // (Frontend em localhost:xxxx falando com Backend em localhost:3000)
-    apiUrl = 'http://localhost:3000';
+    apiUrl = 'http://localhost/api';
   } else {
     // 2. AMBIENTE DE PRODUÇÃO (EC2)
     // (Frontend em http://[hostname]:8080 falando com Backend em http://[hostname]:3000)
     //
     // Pega o protocolo (http:) e o hostname (adacompany.duckdns.org)
     // e apenas anexa a porta do backend (:3000)
-    apiUrl = `${window.location.protocol}//${hostname}:3000`;
+    apiUrl = `${window.location.protocol}//${hostname}/api`;
   }
 
   const handleSubmit = async (e) => {
