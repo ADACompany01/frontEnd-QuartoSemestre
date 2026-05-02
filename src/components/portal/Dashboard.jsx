@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import axios from 'axios';
 
 const Dashboard = () => {
@@ -8,6 +8,9 @@ const Dashboard = () => {
   const [result, setResult] = useState(null);
   const [recommendation, setRecommendation] = useState('');
   const [problemasEncontrados, setProblemasEncontrados] = useState([]);
+  const [isListening, setIsListening] = useState(false);
+  const [speechError, setSpeechError] = useState('');
+  const recognitionRef = useRef(null);
 
   const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:3000'
@@ -43,6 +46,70 @@ const Dashboard = () => {
     }
   };
 
+  const normalizeSpokenUrl = (spokenText) => {
+    let cleaned = spokenText.toLowerCase().trim();
+    cleaned = cleaned.replace(/\s+/g, ' ');
+    cleaned = cleaned
+      .replace(/ ponto /g, '.')
+      .replace(/ barra /g, '/')
+      .replace(/ dois pontos /g, ':')
+      .replace(/ traço /g, '-')
+      .replace(/ underline /g, '_')
+      .replace(/\s+dot\s+/g, '.')
+      .replace(/\s+slash\s+/g, '/');
+
+    cleaned = cleaned.replace(/\s/g, '');
+    if (cleaned && !cleaned.startsWith('http://') && !cleaned.startsWith('https://')) {
+      cleaned = `https://${cleaned}`;
+    }
+
+    return cleaned;
+  };
+
+  const handleVoiceInput = () => {
+    if (typeof window === 'undefined') return;
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setSpeechError('Seu navegador não suporta reconhecimento de voz.');
+      return;
+    }
+
+    if (isListening && recognitionRef.current) {
+      recognitionRef.current.stop();
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'pt-BR';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      setSpeechError('');
+      setIsListening(true);
+    };
+
+    recognition.onresult = (event) => {
+      const transcript = event.results?.[0]?.[0]?.transcript || '';
+      const spokenUrl = normalizeSpokenUrl(transcript);
+      if (spokenUrl) {
+        setUrl(spokenUrl);
+      }
+    };
+
+    recognition.onerror = () => {
+      setSpeechError('Não foi possível capturar a voz. Tente novamente.');
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+  };
+
   const renderAuditItems = (items) => {
     return items.length > 0 ? (
       <ul>
@@ -62,13 +129,27 @@ const Dashboard = () => {
     <div className="portal-dashboard dashboard-container">
       <h2 className="dashboard-title">Diagnóstico de Acessibilidade</h2>
 
-      <input
-        type="text"
-        placeholder="Digite o link do seu site (ex: https://exemplo.com)"
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
-        className="dashboard-input"
-      />
+      <div className="dashboard-input-row">
+        <input
+          type="text"
+          placeholder="Digite o link do seu site (ex: https://exemplo.com)"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          className="dashboard-input"
+        />
+        <button
+          type="button"
+          onClick={handleVoiceInput}
+          className="portal-button dashboard-voice-button"
+          aria-label="Preencher URL por voz"
+          title="Falar URL"
+        >
+          <span className="dashboard-voice-icon" aria-hidden="true">
+            {isListening ? '🔴' : '🎤'}
+          </span>
+        </button>
+      </div>
+      {speechError && <p className="dashboard-voice-error">{speechError}</p>}
 
       <button
         onClick={handleAnalyze}
